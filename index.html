@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sanduk — UI Prototype v0.4</title>
+<title>Sanduk — UI Prototype v0.5</title>
 <style>
   :root{
     --bg:#FAFAFA; --surface:#FFFFFF; --surface2:#F4F4F5; --line:#E4E4E7;
@@ -136,6 +136,28 @@
   .ffab.raised{margin-bottom:12px}
   .ffab.inpill{width:48px;height:48px;border-radius:999px;margin:0 2px}
   .exp-note{font-size:12px;color:var(--muted);line-height:1.45}
+  /* ---- Mobile view ---- */
+  .toolbar .seg-view{display:inline-flex;background:#D4D4D8;border-radius:10px;padding:3px;margin-left:auto}
+  .toolbar .seg-view button{background:transparent;color:#3F3F46;padding:7px 12px;border-radius:8px}
+  .toolbar .seg-view button.on{background:#fff;color:#18181B;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  body.mobile{padding:12px}
+  body.mobile h1{font-size:18px} body.mobile .sub{font-size:12px;margin-bottom:12px}
+  body.mobile .toolbar{flex-wrap:wrap;gap:6px} body.mobile .toolbar button{padding:8px 10px;font-size:12px}
+  body.mobile #logo-pick,body.mobile #experiment,body.mobile .ds,body.mobile .tk,body.mobile h1[style]{display:none}
+  body.mobile #root h2{display:none}
+  body.mobile .grid{display:block}
+  body.mobile .frame-wrap{display:none;margin:0 auto;width:100%;max-width:420px}
+  body.mobile .frame-wrap.show{display:flex;align-items:center}
+  body.mobile .frame-wrap .label{text-align:center;margin-bottom:6px}
+  body.mobile .phone{transform-origin:top center}
+  body.mobile .comp-sheet{width:100%;max-width:420px;min-height:0}
+  body.mobile .comp-grid{grid-template-columns:1fr}
+  .mnav{display:none;position:sticky;top:0;z-index:50;background:rgba(228,228,231,.92);backdrop-filter:blur(10px);padding:8px 0 10px;margin-bottom:8px}
+  body.dark-page .mnav{background:rgba(0,0,0,.85)}
+  body.mobile .mnav{display:flex;gap:8px;align-items:center}
+  .mnav select{flex:1;min-width:0;font-size:14px;padding:10px 12px;border-radius:10px;border:1px solid #CBD5E1;background:#fff;color:#18181B}
+  .mnav button{width:42px;height:42px;border-radius:10px;border:0;background:#18181B;color:#fff;font-size:18px;cursor:pointer}
+  .mnav button:disabled{opacity:.35}
   .comp-sheet{width:820px;height:auto;min-height:812px;border-radius:24px;border-width:1px;border-color:var(--line);box-shadow:0 10px 30px rgba(0,0,0,.12)}
   .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:8px 24px 24px}
   .comp-grid section{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
@@ -146,13 +168,15 @@
 </style>
 </head>
 <body>
-<h1>Sanduk — UI Prototype v0.4</h1>
+<h1>Sanduk — UI Prototype v0.5</h1>
 <p class="sub">Neutral black/white · single orange accent · vector icons · light &amp; dark · 375×812 · base currency ETB · device-first auth (PIN + biometrics, email link optional) · 24 screens + component sheet</p>
 <div class="toolbar">
   <button id="t-light">Light theme</button>
   <button id="t-dark">Dark theme</button>
   <button id="t-both" class="alt">Show both</button>
+  <span class="seg-view"><button id="v-desktop" class="on">Desktop view</button><button id="v-mobile">Mobile view</button></span>
 </div>
+<div class="mnav" id="mnav"><button id="m-prev">‹</button><select id="m-select"></select><button id="m-next">›</button></div>
 
 <div id="logo-pick"></div>
 
@@ -852,10 +876,59 @@ function render(mode){
     const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">25 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
   }
 }
-document.getElementById("t-light").onclick=()=>render("light");
-document.getElementById("t-dark").onclick=()=>render("dark");
-document.getElementById("t-both").onclick=()=>render("both");
-render("both");
+document.getElementById("t-light").onclick=()=>{curMode="light";render("light");};
+document.getElementById("t-dark").onclick=()=>{curMode="dark";render("dark");};
+document.getElementById("t-both").onclick=()=>{curMode="both";render("both");};
+
+// ================= MOBILE / DESKTOP VIEW =================
+let curMode="both", curView=null, curIdx=0;
+function frames(){return [...document.querySelectorAll("#root .frame-wrap")];}
+function fitPhone(){
+  const fw=frames()[curIdx]; if(!fw) return;
+  const ph=fw.querySelector(".phone"); if(!ph) return;
+  const avail=Math.min(window.innerWidth-24, 420);
+  const natural=ph.classList.contains("comp-sheet")?avail:375;
+  const s=Math.min(1, avail/natural);
+  ph.style.transform=`scale(${s})`;
+  fw.style.height=(ph.offsetHeight*s+40)+"px";
+}
+function showIdx(i){
+  const fs=frames(); if(!fs.length) return;
+  curIdx=Math.max(0,Math.min(fs.length-1,i));
+  fs.forEach((f,k)=>f.classList.toggle("show",k===curIdx));
+  const sel=document.getElementById("m-select"); sel.value=String(curIdx);
+  document.getElementById("m-prev").disabled=curIdx===0;
+  document.getElementById("m-next").disabled=curIdx===fs.length-1;
+  fitPhone(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function setView(v){
+  curView=v; localStorage.setItem("sanduk-view",v);
+  document.body.classList.toggle("mobile",v==="mobile");
+  document.getElementById("v-desktop").classList.toggle("on",v==="desktop");
+  document.getElementById("v-mobile").classList.toggle("on",v==="mobile");
+  if(v==="mobile"){
+    if(curMode==="both"){curMode="light";render("light");}
+    const sel=document.getElementById("m-select");
+    sel.innerHTML=frames().map((f,i)=>`<option value="${i}">${f.querySelector(".label").childNodes[0].textContent.trim()}</option>`).join("");
+    showIdx(curIdx);
+  } else {
+    frames().forEach(f=>{f.classList.remove("show");f.style.height="";const ph=f.querySelector(".phone");if(ph)ph.style.transform="";});
+  }
+}
+document.getElementById("v-desktop").onclick=()=>setView("desktop");
+document.getElementById("v-mobile").onclick=()=>setView("mobile");
+document.getElementById("m-prev").onclick=()=>showIdx(curIdx-1);
+document.getElementById("m-next").onclick=()=>showIdx(curIdx+1);
+document.getElementById("m-select").onchange=(e)=>showIdx(+e.target.value);
+window.addEventListener("resize",()=>{if(curView==="mobile")fitPhone();});
+// swipe between screens
+let tx0=null;document.addEventListener("touchstart",e=>{tx0=e.touches[0].clientX;},{passive:true});
+document.addEventListener("touchend",e=>{if(curView!=="mobile"||tx0===null)return;const dx=e.changedTouches[0].clientX-tx0;tx0=null;if(Math.abs(dx)>60)showIdx(curIdx+(dx<0?1:-1));},{passive:true});
+// theme buttons must re-apply mobile state after re-render
+const _render=render; render=function(mode){_render(mode); if(curView==="mobile") setView("mobile");};
+
+const initialView=localStorage.getItem("sanduk-view")||(window.innerWidth<700?"mobile":"desktop");
+if(initialView==="mobile"){curMode="light";render("light");setView("mobile");} else {render("both");setView("desktop");}
 
 const sw=[["Ink / primary","#18181B","#fff"],["Accent","#F97316","#fff"],["Income","#16A34A","#fff"],["Expense","#DC2626","#fff"],["Transfer","#2563EB","#fff"],["Text","#09090B","#fff"],["Muted","#71717A","#fff"],["Background","#FAFAFA","#09090B"],["Surface 2","#F4F4F5","#09090B"],["Line","#E4E4E7","#09090B"],["Dark bg","#0A0A0A","#fff"],["Dark surface","#161616","#fff"],["Dark surface 2","#222222","#fff"],["Dark line","#2A2A2A","#fff"]];
 document.getElementById("swatches").innerHTML=sw.map(([n,c,t])=>`<div class="swatch" style="background:${c};color:${t}">${n}<br>${c}</div>`).join("");
