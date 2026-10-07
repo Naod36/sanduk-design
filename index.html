@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sanduk — UI Prototype v0.5</title>
+<title>Sanduk — UI Prototype v0.6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#FAFAFA; --surface:#FFFFFF; --surface2:#F4F4F5; --line:#E4E4E7;
@@ -136,6 +138,16 @@
   .ffab.raised{margin-bottom:12px}
   .ffab.inpill{width:48px;height:48px;border-radius:999px;margin:0 2px}
   .exp-note{font-size:12px;color:var(--muted);line-height:1.45}
+  /* ---- Amharic: Inter stays for Latin + digits, Ethiopic glyphs fall back to Noto Sans Ethiopic (same plan in-app) ---- */
+  .phone[lang="am"]{font-family:-apple-system,"SF Pro Text",Inter,"Noto Sans Ethiopic",Segoe UI,Roboto,sans-serif}
+  .phone[lang="am"] .tab{font-size:9px}
+  .langrow{display:flex;align-items:center;gap:14px;padding:16px 14px;border-radius:16px;border:1px solid var(--line);background:var(--surface)}
+  .langrow.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+  .langrow .glyph{width:44px;height:44px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:20px}
+  .langrow .glyph.am{font-family:"Noto Sans Ethiopic",sans-serif}
+  .langseg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:3px;align-self:flex-start;margin-bottom:22px}
+  .langseg div{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted)}
+  .langseg .on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
   /* ---- Mobile view ---- */
   .toolbar .seg-view{display:inline-flex;background:#D4D4D8;border-radius:10px;padding:3px;margin-left:auto}
   .toolbar .seg-view button{background:transparent;color:#3F3F46;padding:7px 12px;border-radius:8px}
@@ -168,8 +180,8 @@
 </style>
 </head>
 <body>
-<h1>Sanduk — UI Prototype v0.5</h1>
-<p class="sub">Neutral black/white · single orange accent · vector icons · light &amp; dark · 375×812 · base currency ETB · device-first auth (PIN + biometrics, email link optional) · 24 screens + component sheet</p>
+<h1>Sanduk — UI Prototype v0.6</h1>
+<p class="sub">Neutral black/white · single orange accent · vector icons · light &amp; dark · 375×812 · base currency ETB · device-first auth (PIN + biometrics, email link optional) · 24 screens + component sheet · <b>new:</b> language step variants (26–27) and Amharic UI (28–31)</p>
 <div class="toolbar">
   <button id="t-light">Light theme</button>
   <button id="t-dark">Dark theme</button>
@@ -729,6 +741,127 @@ const screens=[
   <div class="h3" style="margin:18px 0 8px">Conflict (rare — partner edited same row)</div>
   <div class="card" style="padding:12px"><div style="font-size:13px;margin-bottom:10px"><b>Sara also edited this.</b> Keep which version?</div><div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:10px;font-size:13px">Mine · 1,240</div><div class="btn" style="flex:1;padding:10px;font-size:13px">Sara's · 1,420</div></div></div>
  </div>${TAB("Home")}`],
+
+// ================= LANGUAGE: onboarding step variants + Amharic UI =================
+["26 · Language — variant A (on Welcome)","Segmented toggle under the tagline · keeps onboarding at 4 steps",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div style="flex:.7"></div>
+  <div style="width:72px;height:72px;border-radius:22px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;margin-bottom:20px"><svg width="52" height="52" viewBox="0 0 64 64" style="--logo-bg:var(--ink)"><rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/></svg></div>
+  <div style="font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.5px">sanduk</div>
+  <p style="color:var(--muted);font-size:15px;margin:8px 0 16px;line-height:1.45">Track every birr. Together.</p>
+  <div class="langseg"><div class="on">${I("globe","font-size:12px;margin-right:4px")}English</div><div style="font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:500">
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Works offline</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Share with your partner</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Your data stays on your phone</div>
+  </div>
+  <div style="flex:1"></div>
+  <div class="btn">Get started</div>
+  <div style="text-align:center;color:var(--muted);font-size:14px;margin:16px 0 30px;font-weight:600">Already have an account? Restore</div>
+ </div>`],
+
+["27 · Language — variant B (own step)","Step 1 of 5 · big rows · pre-selected from phone language",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div class="steps">${[1,2,3,4,5].map(i=>`<div class="bar" style="flex:1">${i<=1?`<i style="width:100%;background:var(--ink)"></i>`:""}</div>`).join("")}</div><div class="caption">Step 1 of 5</div>
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:6px">Choose your language</div>
+  <div style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:10px;font-family:'Noto Sans Ethiopic',sans-serif">ቋንቋ ይምረጡ</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.45;margin-bottom:18px">You can change this any time in Settings. Numbers and currency stay the same.</p>
+  <div style="display:flex;flex-direction:column;gap:10px">
+   <div class="langrow on"><div class="glyph">Aa</div><div style="flex:1"><div style="font-weight:700;font-size:16px">English</div><div style="font-size:12px;color:var(--muted)">English</div></div><span style="color:var(--accent);font-size:20px">${I("check")}</span></div>
+   <div class="langrow"><div class="glyph am">አ</div><div style="flex:1"><div style="font-weight:700;font-size:16px;font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div><div style="font-size:12px;color:var(--muted)">Amharic</div></div></div>
+  </div>
+  <div class="notice" style="margin-top:14px;display:flex;gap:8px;align-items:flex-start;background:var(--surface2);color:var(--muted)">${I("info","margin-top:2px")}<span>Pre-selected from your phone's language. Your partner can use a different language.</span></div>
+  <div style="flex:1"></div>
+ </div>
+ <div class="actionbar"><div class="btn">Continue</div></div>`],
+
+["28 · Welcome — አማርኛ","Amharic copy · Inter for Latin/digits, Noto Sans Ethiopic fallback",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div style="flex:.7"></div>
+  <div style="width:72px;height:72px;border-radius:22px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;margin-bottom:20px"><svg width="52" height="52" viewBox="0 0 64 64" style="--logo-bg:var(--ink)"><rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/></svg></div>
+  <div style="font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.5px">sanduk</div>
+  <p style="color:var(--muted);font-size:15px;margin:8px 0 16px;line-height:1.5">እያንዳንዱን ብር ይከታተሉ። አብራችሁ።</p>
+  <div class="langseg"><div>${I("globe","font-size:12px;margin-right:4px")}English</div><div class="on">አማርኛ</div></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:500">
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>ያለ ኢንተርኔት ይሰራል</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>ከባለቤትዎ ጋር ይጋሩ</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>መረጃዎ በስልክዎ ላይ ይቀራል</div>
+  </div>
+  <div style="flex:1"></div>
+  <div class="btn">ይጀምሩ</div>
+  <div style="text-align:center;color:var(--muted);font-size:14px;margin:16px 0 30px;font-weight:600">አካውንት አለዎት? መልሰው ያግኙ</div>
+ </div>`,"am"],
+
+["29 · Home — አማርኛ","Same layout; Ethiopian month names; digits unchanged",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 16px">
+   <div style="display:flex;align-items:center;gap:10px"><div class="avatar">ና</div><div><div style="font-size:12px;color:var(--muted)">ቤተሰብ</div><div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px">ናኦድ እና ሳራ ${I("chevD","font-size:14px;color:var(--muted)")}</div></div></div>
+   <div style="display:flex;gap:8px"><div class="icon-btn" style="position:relative">${I("inbox")}<span class="badge">3</span></div><div class="icon-btn">${I("bell")}</div></div>
+  </div>
+  <div class="card hero">
+   <div style="font-size:12px;opacity:.8">ለወጪ የሚቻል · ጥቅምት</div>
+   <div style="font-size:34px;font-weight:800;margin:4px 0 2px;letter-spacing:-.5px">ETB 14,320</div>
+   <div style="font-size:12px;opacity:.8">ከ42,000 በጀት · 24 ቀናት ቀርተዋል</div>
+   <div class="bar" style="margin-top:14px"><i style="width:66%;background:var(--accent)"></i></div>
+   <div class="row" style="margin-top:14px;font-size:13px"><span style="display:flex;gap:4px;align-items:center">${I("arrowDn")} ገቢ <b>ETB 58,000</b></span><span style="display:flex;gap:4px;align-items:center">${I("arrowUp")} ወጪ <b>ETB 27,680</b></span></div>
+  </div>
+  <div class="row" style="margin:18px 0 10px"><div class="h3" style="text-transform:none">በጀቶች</div><span style="font-size:13px;color:var(--accent);font-weight:600">ሁሉንም ይመልከቱ</span></div>
+  <div style="display:flex;gap:10px;overflow:hidden">
+   ${[["cart","ግሮሰሪ","5,800 / 10,000","var(--income)",58,"var(--muted)"],["utensils","ምግብ ቤት","4,200 / 5,000","var(--warn)",84,"var(--muted)"],["car","ትራንስፖርት","3,360 / 3,000","var(--expense)",100,"var(--expense)"]].map(([ic,n,s,c,d,sc])=>`
+   <div class="card" style="min-width:122px;padding:12px;text-align:center">
+    <div style="width:72px;height:72px;border-radius:50%;background:conic-gradient(${c} 0 ${d}%,var(--surface2) ${d}% 100%);margin:0 auto;display:grid;place-items:center"><div style="width:56px;height:56px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:700">${d===100?"112%":d+"%"}</div></div>
+    <div style="font-size:13px;font-weight:600;margin-top:8px;display:flex;gap:5px;justify-content:center;align-items:center">${I(ic,"color:var(--muted)")}${n}</div><div style="font-size:11px;color:${sc}">${s}</div>
+   </div>`).join("")}
+  </div>
+  <div class="row" style="margin:18px 0 10px"><div class="h3" style="text-transform:none">የገንዘብ ፍሰት · ያለፉት 6 ወራት</div></div>
+  <div class="card" style="padding:14px">
+   <svg width="100%" height="110" viewBox="0 0 320 110"><g font-size="10" fill="var(--muted2)" font-family="Noto Sans Ethiopic, sans-serif"><text x="14" y="106">ግንቦት</text><text x="66" y="106">ሰኔ</text><text x="118" y="106">ሐምሌ</text><text x="170" y="106">ነሐሴ</text><text x="222" y="106">መስከረም</text><text x="274" y="106">ጥቅምት</text></g>
+   <g>${[[8,30,62,52,40],[60,26,66,44,48],[112,34,58,38,54],[164,22,70,50,42],[216,28,64,46,46],[268,18,74,58,34]].map(([x,y1,h1,y2,h2],i)=>`<rect x="${x}" y="${y1}" width="18" height="${h1}" rx="4" fill="var(--income)"/><rect x="${x+20}" y="${y2}" width="18" height="${h2}" rx="4" fill="var(--expense)" ${i===5?'opacity=".5"':""}/>`).join("")}</g></svg>
+   <div class="legend" style="margin-top:6px"><span><i style="background:var(--income)"></i>ገቢ</span><span><i style="background:var(--expense)"></i>ወጪ</span><span style="margin-left:auto;color:var(--income);font-weight:700">ተጣራ +30,320</span></div>
+  </div>
+  <div class="row" style="margin:18px 0 6px"><div class="h3" style="text-transform:none">የቅርብ ጊዜ</div></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","ግሮሰሪ · ሳራ · "+I("inbox")+" ራስ-ሰር","-1,240","exp")}
+   ${TX("briefcase","var(--surface2)","var(--text)","ደመወዝ — ጥቅምት","ገቢ · CBE ••4821","+58,000","inc")}
+  </div>
+ </div>${TAB("Home")}`,"am"],
+
+["30 · Quick Add — አማርኛ","Expense / Income / Transfer = ወጪ / ገቢ / ዝውውር",`
+ <div class="dim"></div>
+ <div class="sheet">
+  <div class="handle"></div>
+  <div class="seg" style="margin-bottom:18px"><div class="on" style="color:var(--expense)">ወጪ</div><div>ገቢ</div><div>ዝውውር</div></div>
+  <div style="text-align:center;margin-bottom:6px"><span style="font-size:14px;color:var(--muted);font-weight:600">ETB</span></div>
+  <div style="text-align:center;font-size:44px;font-weight:800;letter-spacing:-1px;margin-bottom:14px" class="exp">1,240<span style="color:var(--line)">.00</span></div>
+  <div class="chips" style="margin-bottom:12px"><div class="chip on">${I("cart")}ግሮሰሪ</div><div class="chip">${I("utensils")}ምግብ ቤት</div><div class="chip">${I("car")}ትራንስፖርት</div><div class="chip">${I("home")}ኪራይ</div><div class="chip">${I("plus")}</div></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px"><div class="chip" style="flex:1;justify-content:center">${I("landmark")}CBE ••4821 ${I("chevD")}</div><div class="chip" style="flex:1;justify-content:center">${I("calendar")}ዛሬ ${I("chevD")}</div><div class="chip">${I("users")}የጋራ</div></div>
+  <div class="search" style="margin-bottom:14px">${I("pencil")} ማስታወሻ ወይም ተቀባይ…</div>
+  <div class="keypad">${["1","2","3","4","5","6","7","8","9",".","0",I("del")].map(k=>`<div class="key">${k}</div>`).join("")}</div>
+  <div class="btn" style="margin-top:14px">ወጪ አስቀምጥ</div>
+ </div>`,"am"],
+
+["31 · Accounts — አማርኛ","Net worth = ጠቅላላ ሀብት · Shared/Personal/Liabilities = የጋራ/የግል/ዕዳዎች",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">አካውንቶች</div><div class="icon-btn">${I("plus")}</div></div>
+  <div class="card hero">
+   <div style="font-size:12px;opacity:.8">ጠቅላላ ሀብት</div>
+   <div style="font-size:30px;font-weight:800;margin:4px 0 2px">ETB 128,340</div>
+   <div style="font-size:12px;opacity:.8;display:flex;gap:4px;align-items:center">${I("arrowUp")} +6,200 በዚህ ወር</div>
+  </div>
+  <div class="h3" style="margin:18px 0 8px;text-transform:none">የጋራ</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("landmark","var(--surface2)","var(--text)","CBE ••4821","ባንክ · ናኦድ","58,420","")}
+   ${TX("home","var(--surface2)","var(--text)","የጋራ ቁጠባ","ባንክ · አዋሽ","65,000","")}
+  </div>
+  <div class="h3" style="margin:18px 0 8px;text-transform:none">የግል</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("phone","var(--surface2)","var(--text)","ቴሌብር","ሞባይል ገንዘብ","3,120","")}
+   ${TX("wallet","var(--surface2)","var(--text)","ጥሬ ገንዘብ","ቦርሳ","1,800","")}
+   ${TX("coins","var(--expense-soft)","var(--expense)","Visa ••0931","ካርድ · USD · $-120.00","-6,000","exp")}
+  </div>
+  <div class="h3" style="margin:18px 0 8px;text-transform:none">ዕዳዎች</div>
+  <div class="card" style="padding:4px 16px">${TX("landmark","var(--expense-soft)","var(--expense)","የመኪና ብድር — አዋሽ","ብድር · 9.5%","-182,000","exp")}</div>
+ </div>${TAB("Home")}`,"am"],
 ];
 
 // ================= COMPONENT SHEET =================
@@ -866,14 +999,14 @@ function render(mode){
   for(const th of themes){
     const h=document.createElement("h2");h.textContent=th==="light"?"Light":"Dark";h.style.cssText="font-size:18px;margin:24px 0 14px;color:"+(mode==="dark"?"#D4D4D8":"#3F3F46");root.appendChild(h);
     const g=document.createElement("div");g.className="grid";root.appendChild(g);
-    for(const [name,sub,body] of screens){
+    for(const [name,sub,body,lang] of screens){
       const w=document.createElement("div");w.className="frame-wrap";
-      w.innerHTML=`<div class="label">${name}<span>${sub}</span></div><div class="phone" data-theme="${th}"><div class="screen">${STATUS}${body}</div></div>`;
+      w.innerHTML=`<div class="label">${name}<span>${sub}</span></div><div class="phone" data-theme="${th}"${lang?` lang="${lang}"`:""}><div class="screen">${STATUS}${body}</div></div>`;
       g.appendChild(w);
     }
     const cs=document.createElement("div");cs.className="phone comp-sheet";cs.setAttribute("data-theme",th);
     cs.innerHTML=`<div style="padding:24px 24px 8px"><div class="h2" style="font-size:22px">Component sheet</div><div style="font-size:13px;color:var(--muted)">All primitives &amp; states · ${th}</div></div>${COMPONENTS}`;
-    const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">25 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
+    const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">32 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
   }
 }
 document.getElementById("t-light").onclick=()=>{curMode="light";render("light");};
