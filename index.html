@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sanduk — UI Prototype v0.4</title>
+<style>
+  :root{
+    --bg:#FAFAFA; --surface:#FFFFFF; --surface2:#F4F4F5; --line:#E4E4E7;
+    --text:#09090B; --muted:#71717A; --muted2:#A1A1AA;
+    --ink:#18181B; --ink2:#3F3F46; --on-ink:#FFFFFF;
+    --accent:#F97316; --accent-soft:#FFF1E6;
+    --income:#16A34A; --income-soft:#E8F7EE;
+    --expense:#DC2626; --expense-soft:#FDECEC;
+    --transfer:#2563EB; --transfer-soft:#E8EFFF;
+    --warn:#F97316; --warn-soft:#FFF1E6; --warn-ink:#9A3412;
+    --shadow:0 30px 60px rgba(0,0,0,.25);
+  }
+  [data-theme="dark"]{
+    --bg:#0A0A0A; --surface:#161616; --surface2:#222222; --line:#2A2A2A;
+    --text:#FAFAFA; --muted:#A1A1AA; --muted2:#71717A;
+    --ink:#FAFAFA; --ink2:#D4D4D8; --on-ink:#09090B;
+    --accent:#FB923C; --accent-soft:#2A1A0F;
+    --income:#22C55E; --income-soft:#0F2A18;
+    --expense:#F87171; --expense-soft:#2E1414;
+    --transfer:#60A5FA; --transfer-soft:#0F1F3A;
+    --warn:#FB923C; --warn-soft:#2A1A0F; --warn-ink:#FDBA74;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E4E4E7;color:#18181B;padding:32px;font-family:-apple-system,"SF Pro Text",Inter,Segoe UI,Roboto,sans-serif}
+  body.dark-page{background:#000}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{color:#52525B;font-size:14px;margin-bottom:20px}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:28px}
+  .toolbar button{background:#18181B;color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;cursor:pointer}
+  .toolbar button.alt{background:#F97316}
+  .grid{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+  .frame-wrap{display:flex;flex-direction:column;gap:10px}
+  .label{font-size:13px;font-weight:600;color:#3F3F46}.dark-page .label{color:#A1A1AA}
+  .label span{display:block;font-weight:400;color:#71717A;font-size:12px;margin-top:2px}
+
+  .phone{width:375px;height:812px;background:var(--bg);color:var(--text);border-radius:44px;border:10px solid #111;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column}
+  .status{height:48px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;font-size:13px;font-weight:600}
+  .content{flex:1;overflow:hidden;padding:0 18px}
+  .tabbar{height:84px;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:flex-start;padding-top:10px;position:relative}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--muted);width:60px}
+  .tab.active{color:var(--accent)}
+  .tab svg{width:24px;height:24px}
+  .fab{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(249,115,22,.4)}
+  .fab svg{width:26px;height:26px;stroke-width:2.5}
+
+  svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em;flex:0 0 auto}
+  .card{background:var(--surface);border-radius:16px;padding:16px;border:1px solid var(--line)}
+  .row{display:flex;align-items:center;justify-content:space-between}
+  .h2{font-size:17px;font-weight:700}
+  .h3{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .money{font-variant-numeric:tabular-nums;font-weight:700}
+  .inc{color:var(--income)} .exp{color:var(--expense)} .trf{color:var(--transfer)}
+  .pill{font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .avatar.b{background:var(--accent);color:#fff}
+  .avatar.s{width:24px;height:24px;font-size:10px}
+  .bar{height:8px;border-radius:999px;background:var(--surface2);overflow:hidden}
+  .bar > i{display:block;height:100%;border-radius:999px}
+  .txn{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .txn:last-child{border-bottom:0}
+  .cat{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;font-size:18px}
+  .txn .t{flex:1;min-width:0}
+  .txn .t b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .txn .t small{color:var(--muted);font-size:12px;display:flex;gap:4px;align-items:center}
+  .chip{padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:500;white-space:nowrap;display:inline-flex;gap:6px;align-items:center;color:var(--text)}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+  .chips{display:flex;gap:8px;overflow:hidden}
+  .btn{background:var(--ink);color:var(--on-ink);border-radius:14px;padding:16px;text-align:center;font-weight:700;font-size:16px}
+  .btn.ghost{background:var(--surface2);color:var(--text)}
+  .btn.accent{background:var(--accent);color:#fff}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:28px 28px 0 0;padding:12px 20px 28px;box-shadow:0 -20px 40px rgba(0,0,0,.2)}
+  .handle{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .key{height:56px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;font-size:22px;font-weight:600}
+  .key.round{height:64px;width:64px;border-radius:50%;margin:0 auto;background:var(--surface)}
+  .pindots{display:flex;gap:16px}
+  .pindots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--text);background:transparent}
+  .pindots i.on{background:var(--text)}
+  .steps{display:flex;gap:6px;margin:14px 0 6px}
+  .caption{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:24px}
+  .actionbar{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 18px 34px}
+  .dim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+  .seg{display:flex;background:var(--surface2);border-radius:12px;padding:4px}
+  .seg div{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+  .seg .on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  .badge{position:absolute;top:-4px;right:-6px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 5px}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .day{font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 2px;display:flex;justify-content:space-between}
+  .search{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--muted);font-size:14px;display:flex;gap:8px;align-items:center}
+  .icon-btn{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--text)}
+  .notice{background:var(--warn-soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--warn-ink)}
+  .hero{background:linear-gradient(135deg,var(--ink),var(--ink2));color:var(--on-ink);border:0}
+  .hero .bar{background:rgba(255,255,255,.25)}[data-theme="dark"] .hero .bar{background:rgba(0,0,0,.25)}
+  .list .lr{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px;font-weight:500}
+  .list .lr:last-child{border-bottom:0}
+  .list .lr .ic{width:30px;height:30px;border-radius:9px;background:var(--surface2);display:grid;place-items:center;font-size:14px;color:var(--text)}
+  .list .lr .lbl{flex:1}
+  .list .lr .val{color:var(--muted);font-size:14px}
+  .toggle{width:44px;height:26px;border-radius:999px;background:var(--line);position:relative}
+  .toggle::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff}
+  .toggle.on{background:var(--accent)}.toggle.on::after{left:20px}
+  .ds{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px;max-width:900px}
+  .swatch{border-radius:12px;padding:12px;font-size:12px;font-weight:600;height:72px;display:flex;align-items:flex-end;border:1px solid rgba(0,0,0,.08)}
+  .tk{color:#52525B;font-size:13px;line-height:1.7;max-width:720px;margin-top:16px}
+  .dark-page .tk,.dark-page h1,.dark-page .sub{color:#D4D4D8}
+  /* ---- Experiment: floating docks ---- */
+  .fdock{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:flex-end;gap:12px;pointer-events:none}
+  .fdock > *{pointer-events:auto}
+  .pilldock{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px;box-shadow:0 12px 32px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08)}
+  [data-theme="dark"] .pilldock{background:#1C1C1C;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+  .pilldock .dk{width:56px;height:48px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:9px;font-weight:600}
+  .pilldock .dk svg{width:22px;height:22px}
+  .pilldock .dk.active{background:var(--ink);color:var(--on-ink)}
+  .pilldock.iconsonly .dk{width:52px;height:48px;font-size:0;gap:0}
+  .pilldock.iconsonly .dk svg{width:24px;height:24px}
+  .pilldock.compact .dk{width:48px;font-size:0}
+  .pilldock.compact .dk svg{width:24px;height:24px}
+  .pilldock.compact .dk.active{color:var(--accent);background:var(--surface2)}
+  .pilldock.labelsel .dk{width:auto;padding:0 14px;flex-direction:row;gap:8px;font-size:13px}
+  .pilldock.labelsel .dk:not(.active){width:48px;padding:0;font-size:0;gap:0}
+  .pilldock.glass{background:rgba(255,255,255,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-color:rgba(0,0,0,.06)}
+  [data-theme="dark"] .pilldock.glass{background:rgba(28,28,28,.72);border-color:rgba(255,255,255,.08)}
+  .ffab{width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 12px 28px rgba(249,115,22,.45),0 2px 6px rgba(0,0,0,.1)}
+  .ffab svg{width:26px;height:26px;stroke-width:2.5}
+  .ffab.ink{background:var(--ink);color:var(--on-ink);box-shadow:0 12px 28px rgba(0,0,0,.3)}
+  .ffab.sm{width:48px;height:48px}
+  .ffab.sm svg{width:22px;height:22px}
+  .ffab.raised{margin-bottom:12px}
+  .ffab.inpill{width:48px;height:48px;border-radius:999px;margin:0 2px}
+  .exp-note{font-size:12px;color:var(--muted);line-height:1.45}
+  .comp-sheet{width:820px;height:auto;min-height:812px;border-radius:24px;border-width:1px;border-color:var(--line);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+  .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:8px 24px 24px}
+  .comp-grid section{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .comp-grid h4{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px}
+  .comp-grid .lbl{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .skel{background:linear-gradient(90deg,var(--surface2) 25%,var(--line) 50%,var(--surface2) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:6px}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<h1>Sanduk — UI Prototype v0.4</h1>
+<p class="sub">Neutral black/white · single orange accent · vector icons · light &amp; dark · 375×812 · base currency ETB · device-first auth (PIN + biometrics, email link optional) · 24 screens + component sheet</p>
+<div class="toolbar">
+  <button id="t-light">Light theme</button>
+  <button id="t-dark">Dark theme</button>
+  <button id="t-both" class="alt">Show both</button>
+</div>
+
+<div id="logo-pick"></div>
+
+<div id="experiment"></div>
+
+<div id="root"></div>
+
+<h1 style="margin-top:48px">Design tokens</h1>
+<div class="ds" id="swatches"></div>
+<div class="tk">
+  <b>Type scale</b> — Display 34/800 · Title 24/700 · Heading 17/700 · Body 15/400 · Caption 12/400 · Overline 12/600 uppercase<br>
+  <b>Spacing</b> — 4pt grid: 4 · 8 · 12 · 16 · 24 · 32 &nbsp;·&nbsp; <b>Radius</b> — 12 · 16 · 28 · pill<br>
+  <b>Rules</b> — Primary actions are ink (black / white in dark). Orange is used <i>only</i> for: FAB, active tab, badges, links, toggles-on, highlight pills. Expense red, income green, transfer blue stay semantic. Icons: Lucide, 2px stroke. Money always tabular-nums.
+</div>
+
+<!-- Lucide icon paths (ISC) -->
+<script>
+const P={
+ home:"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10",
+ cart:"M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6 M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z M20 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z",
+ utensils:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2 M7 2v20 M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7",
+ car:"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2 M7 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M9 17h6 M17 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4z",
+ briefcase:"M4 7h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16",
+ pill:"M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z M8.5 8.5l7 7",
+ swap:"M8 3L4 7l4 4 M4 7h16 M16 21l4-4-4-4 M20 17H4",
+ bell:"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0",
+ inbox:"M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z",
+ plane:"M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z",
+ shield:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+ landmark:"M3 22h18 M6 18v-7 M10 18v-7 M14 18v-7 M18 18v-7 M12 2L2 7h20z",
+ user:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
+ bulb:"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5 M9 18h6 M10 22h4",
+ gift:"M3 8h18v4H3z M12 8v13 M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7 M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5",
+ fuel:"M3 22V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16 M3 22h10 M14 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V8l-3-3 M4 11h8",
+ receipt:"M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8 M12 17.5v-11",
+ repeat:"M17 2l4 4-4 4 M3 11v-1a4 4 0 0 1 4-4h14 M7 22l-4-4 4-4 M21 13v1a4 4 0 0 1-4 4H3",
+ target:"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4z",
+ trash:"M3 6h18 M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+ users:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+ coins:"M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2z M18.09 10.37A6 6 0 1 1 10.34 18 M7 6h1v4 M16.71 13.88l.7.71-2.82 2.82",
+ tag:"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z M7.5 7h.01",
+ zap:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+ flask:"M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2 M8.5 2h7 M7 16h10",
+ lock:"M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M7 11V7a5 5 0 0 1 10 0v4",
+ cloud:"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z",
+ upload:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12",
+ moon:"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z",
+ globe:"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20 M2 12h20",
+ info:"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 16v-4 M12 8h.01",
+ eye:"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+ calendar:"M8 2v4 M16 2v4 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M3 10h18",
+ pencil:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z M15 5l4 4",
+ search:"M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16z M21 21l-4.3-4.3",
+ alert:"M21.73 18l-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3 M12 9v4 M12 17h.01",
+ check:"M20 6L9 17l-5-5",
+ copy:"M10 8h12v12a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",
+ updown:"M21 16l-4 4-4-4 M17 20V4 M3 8l4-4 4 4 M7 4v16",
+ list:"M8 6h13 M8 12h13 M8 18h13 M3 6h.01 M3 12h.01 M3 18h.01",
+ pie:"M21.21 15.89A10 10 0 1 1 8 2.83 M22 12A10 10 0 0 0 12 2v10z",
+ barchart:"M12 20V10 M18 20V4 M6 20v-4",
+ del:"M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z M18 9l-6 6 M12 9l6 6",
+ plus:"M12 5v14 M5 12h14", chevL:"M15 18l-6-6 6-6", chevR:"M9 18l6-6-6-6", chevD:"M6 9l6 6 6-6",
+ arrowR:"M5 12h14 M12 5l7 7-7 7", arrowDn:"M12 5v14 M19 12l-7 7-7-7", arrowUp:"M12 19V5 M5 12l7-7 7 7",
+ wallet:"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1 M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4",
+ phone:"M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M12 18h.01",
+ settings:"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z",
+ qr:"M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h3v3h-3z M21 14v3 M17 21h4 M14 21h0",
+ share:"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8 M16 6l-4-4-4 4 M12 2v13",
+ link:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+ mail:"M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6",
+ fingerprint:"M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4 M14 13.12c0 2.38 0 6.38-1 8.88 M17.29 21.02c.12-.6.43-2.3.5-3.02 M2 12a10 10 0 0 1 18-6 M2 16h.01 M21.8 16c.2-2 .131-5.354 0-6 M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2 M8.65 22c.21-.66.45-1.32.57-2 M9 6.8a6 6 0 0 1 9 5.2v2",
+ "shield-check":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z M9 12l2 2 4-4",
+ key:"M21 2l-2 2 M11.39 11.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78z M11.39 11.61L15.5 7.5 M15.5 7.5l3 3L22 7l-3-3 M15.5 7.5L19 4",
+};
+const STEPS=(n)=>`<div class="steps">${[1,2,3,4].map(i=>`<div class="bar" style="flex:1">${i<=n?`<i style="width:100%;background:var(--ink)"></i>`:""}</div>`).join("")}</div><div class="caption">Step ${n} of 4</div>`;
+const DOTS=(f,t=4)=>`<div class="pindots">${Array.from({length:t},(_,i)=>`<i class="${i<f?"on":""}"></i>`).join("")}</div>`;
+const I=(n,s)=>`<svg class="i" viewBox="0 0 24 24"${s?` style="${s}"`:""}><path d="${P[n]||P.info}"/></svg>`;
+const C=(n,bg,fg,sz=40)=>`<div class="cat" style="background:${bg};color:${fg};width:${sz}px;height:${sz}px;border-radius:${sz*0.3}px;font-size:${sz*0.45}px">${I(n)}</div>`;
+const TX=(n,bg,fg,title,sub,amt,cls)=>`<div class="txn">${C(n,bg,fg)}<div class="t"><b>${title}</b><small>${sub}</small></div><div class="money ${cls}">${amt}</div></div>`;
+const TAB_OLD=(a)=>`<div class="tabbar">${[["Home","home"],["Transactions","list"],null,["Budgets","pie"],["Insights","barchart"]].map(t=>t?`<div class="tab ${t[0]===a?"active":""}">${I(t[1])}${t[0]}</div>`:`<div style="width:60px"></div>`).join("")}<div class="fab">${I("plus")}</div></div>`;
+// Chosen dock (v0.5): floating icon-only pill, active tab = ink capsule, raised orange + beside it.
+const TAB=(a)=>`<div style="height:96px"></div><div class="fdock"><div class="pilldock iconsonly">${[["Home","home"],["Transactions","list"],["Budgets","pie"],["Insights","barchart"]].map(([n,ic])=>`<div class="dk ${n===a?"active":""}" title="${n}">${I(ic)}</div>`).join("")}</div><div class="ffab raised">${I("plus")}</div></div>`;
+const STATUS=`<div class="status"><span>9:41</span><span>●●● ⌔ ▮</span></div>`;
+const LR=(ic,lbl,val,extra="")=>`<div class="lr"${extra}>${ic?`<div class="ic">${I(ic)}</div>`:""}<span class="lbl">${lbl}</span>${val||""}</div>`;
+const TG=(on)=>`<div class="toggle ${on?"on":""}"></div>`;
+
+const screens=[
+["01 · Onboarding","Currency → account → notification access",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div style="display:flex;gap:6px;margin:14px 0 30px">
+   <div class="bar" style="flex:1"><i style="width:100%;background:var(--ink)"></i></div><div class="bar" style="flex:1"><i style="width:100%;background:var(--ink)"></i></div><div class="bar" style="flex:1"><i style="width:60%;background:var(--ink)"></i></div><div class="bar" style="flex:1"></div>
+  </div>
+  <div style="width:84px;height:84px;border-radius:26px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:38px;margin-bottom:22px">${I("bell")}</div>
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:12px">Capture bank alerts automatically</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.5">Sanduk can read your bank's transaction notifications and turn them into entries — so you never type a purchase again.</p>
+  <div class="card" style="margin-top:22px;display:flex;flex-direction:column;gap:12px;font-size:14px">
+   <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--income)">${I("check")}</span>Processed on your phone only</div>
+   <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--income)">${I("check")}</span>Only banking apps are read</div>
+   <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--income)">${I("check")}</span>You confirm before anything is saved</div>
+  </div>
+  <div class="notice" style="margin-top:14px;display:flex;gap:8px;align-items:flex-start">${I("info","margin-top:2px")}<span>Android only. On iPhone, share a bank SMS to Sanduk to add it instantly.</span></div>
+  <div style="flex:1"></div>
+  <div class="btn">Allow notification access</div>
+  <div style="text-align:center;color:var(--muted);font-size:14px;margin:16px 0 22px;font-weight:600">Maybe later</div>
+ </div>`],
+
+["02 · Home","Safe-to-spend, budgets, cash-flow, needs-review",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 16px">
+   <div style="display:flex;align-items:center;gap:10px"><div class="avatar">N</div><div><div style="font-size:12px;color:var(--muted)">Household</div><div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px">Naod &amp; Sara ${I("chevD","font-size:14px;color:var(--muted)")}</div></div></div>
+   <div style="display:flex;gap:8px"><div class="icon-btn" style="position:relative">${I("inbox")}<span class="badge">3</span></div><div class="icon-btn">${I("bell")}</div></div>
+  </div>
+  <div class="card hero">
+   <div style="font-size:12px;opacity:.8">Safe to spend · October</div>
+   <div style="font-size:34px;font-weight:800;margin:4px 0 2px;letter-spacing:-.5px">ETB 14,320</div>
+   <div style="font-size:12px;opacity:.8">of 42,000 budget · 24 days left</div>
+   <div class="bar" style="margin-top:14px"><i style="width:66%;background:var(--accent)"></i></div>
+   <div class="row" style="margin-top:14px;font-size:13px"><span style="display:flex;gap:4px;align-items:center">${I("arrowDn")} Income <b>ETB 58,000</b></span><span style="display:flex;gap:4px;align-items:center">${I("arrowUp")} Spent <b>ETB 27,680</b></span></div>
+  </div>
+  <div class="row" style="margin:18px 0 10px"><div class="h3">Budgets</div><span style="font-size:13px;color:var(--accent);font-weight:600">See all</span></div>
+  <div style="display:flex;gap:10px;overflow:hidden">
+   ${[["cart","Groceries","5,800 / 10,000","var(--income)",58,"var(--muted)"],["utensils","Eating out","4,200 / 5,000","var(--warn)",84,"var(--muted)"],["car","Transport","3,360 / 3,000","var(--expense)",100,"var(--expense)"]].map(([ic,n,s,c,d,sc])=>`
+   <div class="card" style="min-width:122px;padding:12px;text-align:center">
+    <div style="width:72px;height:72px;border-radius:50%;background:conic-gradient(${c} 0 ${d}%,var(--surface2) ${d}% 100%);margin:0 auto;display:grid;place-items:center"><div style="width:56px;height:56px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:700">${d===100?"112%":d+"%"}</div></div>
+    <div style="font-size:13px;font-weight:600;margin-top:8px;display:flex;gap:5px;justify-content:center;align-items:center">${I(ic,"color:var(--muted)")}${n}</div><div style="font-size:11px;color:${sc}">${s}</div>
+   </div>`).join("")}
+  </div>
+  <div class="row" style="margin:18px 0 10px"><div class="h3">Cash flow · last 6 months</div></div>
+  <div class="card" style="padding:14px">
+   <svg width="100%" height="110" viewBox="0 0 320 110"><g font-size="10" fill="var(--muted2)"><text x="14" y="106">May</text><text x="66" y="106">Jun</text><text x="118" y="106">Jul</text><text x="170" y="106">Aug</text><text x="222" y="106">Sep</text><text x="274" y="106">Oct</text></g>
+   <g>${[[8,30,62,52,40],[60,26,66,44,48],[112,34,58,38,54],[164,22,70,50,42],[216,28,64,46,46],[268,18,74,58,34]].map(([x,y1,h1,y2,h2],i)=>`<rect x="${x}" y="${y1}" width="18" height="${h1}" rx="4" fill="var(--income)"/><rect x="${x+20}" y="${y2}" width="18" height="${h2}" rx="4" fill="var(--expense)" ${i===5?'opacity=".5"':""}/>`).join("")}</g></svg>
+   <div class="legend" style="margin-top:6px"><span><i style="background:var(--income)"></i>Income</span><span><i style="background:var(--expense)"></i>Expense</span><span style="margin-left:auto;color:var(--income);font-weight:700">Net +30,320</span></div>
+  </div>
+  <div class="row" style="margin:18px 0 6px"><div class="h3">Recent</div></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","Groceries · Sara · "+I("inbox")+" Auto","-1,240","exp")}
+   ${TX("briefcase","var(--surface2)","var(--text)","Salary — Oct","Income · CBE ••4821","+58,000","inc")}
+  </div>
+ </div>${TAB("Home")}`],
+
+["03 · Quick Add","Amount-first, &lt;5s to log a transaction",`
+ <div class="dim"></div>
+ <div class="sheet">
+  <div class="handle"></div>
+  <div class="seg" style="margin-bottom:18px"><div class="on" style="color:var(--expense)">Expense</div><div>Income</div><div>Transfer</div></div>
+  <div style="text-align:center;margin-bottom:6px"><span style="font-size:14px;color:var(--muted);font-weight:600">ETB</span></div>
+  <div style="text-align:center;font-size:44px;font-weight:800;letter-spacing:-1px;margin-bottom:14px" class="exp">1,240<span style="color:var(--line)">.00</span></div>
+  <div class="chips" style="margin-bottom:12px"><div class="chip on">${I("cart")}Groceries</div><div class="chip">${I("utensils")}Eating out</div><div class="chip">${I("car")}Transport</div><div class="chip">${I("home")}Rent</div><div class="chip">${I("plus")}</div></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px"><div class="chip" style="flex:1;justify-content:center">${I("landmark")}CBE ••4821 ${I("chevD")}</div><div class="chip" style="flex:1;justify-content:center">${I("calendar")}Today ${I("chevD")}</div><div class="chip">${I("users")}Shared</div></div>
+  <div class="search" style="margin-bottom:14px">${I("pencil")} Add note or payee…</div>
+  <div class="keypad">${["1","2","3","4","5","6","7","8","9",".","0",I("del")].map(k=>`<div class="key">${k}</div>`).join("")}</div>
+  <div class="btn" style="margin-top:14px">Save expense</div>
+ </div>`],
+
+["04 · Transactions","Search, filters, grouped by day, source badges",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Transactions</div><div class="icon-btn">${I("updown")}</div></div>
+  <div class="search">${I("search")} Search payee, note, amount…</div>
+  <div class="chips" style="margin:12px 0 4px"><div class="chip on">All</div><div class="chip">Shared</div><div class="chip">Mine</div><div class="chip">Needs review · 3</div><div class="chip">Category ${I("chevD")}</div></div>
+  <div class="day"><span>Today</span><span class="exp">-2,890</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("alert","var(--warn-soft)","var(--warn)","Dashen Bank · Debit","Needs review · Auto-captured 09:12","-650","exp")}
+   ${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","Groceries · Sara · "+I("inbox")+" Auto","-1,240","exp")}
+   ${TX("utensils","var(--expense-soft)","var(--expense)","Kaldi's Coffee","Eating out · You","-1,000","exp")}
+  </div>
+  <div class="day"><span>Yesterday</span><span class="inc">+57,500</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("briefcase","var(--surface2)","var(--text)","Salary — Oct","Income · CBE ••4821 · "+I("inbox")+" Auto","+58,000","inc")}
+   ${TX("swap","var(--transfer-soft)","var(--transfer)","CBE → Savings","Transfer · Goal: Vacation","5,000","trf")}
+   ${TX("car","var(--warn-soft)","var(--warn)","Ride","Transport · You · "+I("repeat")+" Recurring","-500","exp")}
+  </div>
+  <div class="day"><span>Sat, 4 Oct</span><span class="exp">-12,400</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("home","var(--surface2)","var(--text)","Rent — October","Housing · Shared · paid by Sara","-12,000","exp")}
+   ${TX("pill","var(--expense-soft)","var(--expense)","Pharmacy","Health · You · $8.20 → ETB","-400","exp")}
+  </div>
+ </div>${TAB("Transactions")}`],
+
+["05 · Review inbox","Confirm auto-captured bank alerts",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 6px"><div style="font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Back</div><div style="font-size:13px;color:var(--muted)">Confirm all</div></div>
+  <div class="h2" style="font-size:24px;margin-bottom:4px">Needs review</div>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:16px">3 alerts captured from your bank apps</p>
+  <div class="card" style="margin-bottom:12px">
+   <div class="row" style="margin-bottom:10px"><span class="pill" style="background:var(--surface2);color:var(--text)">${I("landmark")}Dashen Bank · 09:12</span><span style="font-size:12px;color:var(--muted)">Debit</span></div>
+   <div style="font-size:12px;color:var(--muted);background:var(--surface2);padding:10px;border-radius:10px;line-height:1.45;margin-bottom:12px">"Dear Naod, your account 7***21 has been debited with ETB 650.00 at MERKATO FUEL on 06/10/2026. Ref 4F2A…"</div>
+   <div class="row" style="margin-bottom:6px"><span style="font-size:12px;color:var(--muted)">Amount</span><span class="money exp">-650.00</span></div>
+   <div class="row" style="margin-bottom:6px"><span style="font-size:12px;color:var(--muted)">Payee</span><span style="font-size:13px;font-weight:600">Merkato Fuel</span></div>
+   <div class="row" style="margin-bottom:12px"><span style="font-size:12px;color:var(--muted)">Category</span><span class="chip" style="padding:4px 10px">${I("fuel")}Fuel ${I("chevD")} <small style="color:var(--muted)">suggested</small></span></div>
+   <div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:12px;font-size:14px">Ignore</div><div class="btn" style="flex:2;padding:12px;font-size:14px">Confirm</div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+   <div class="row" style="margin-bottom:10px"><span class="pill" style="background:var(--surface2);color:var(--text)">${I("phone")}Telebirr · 08:40</span><span style="font-size:12px;color:var(--muted)">Credit</span></div>
+   <div class="row" style="margin-bottom:6px"><span style="font-size:12px;color:var(--muted)">Amount</span><span class="money inc">+2,000.00</span></div>
+   <div class="row" style="margin-bottom:12px"><span style="font-size:12px;color:var(--muted)">Possible duplicate</span><span class="pill" style="background:var(--accent-soft);color:var(--warn-ink)">Matches manual entry</span></div>
+   <div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:12px;font-size:14px">Keep both</div><div class="btn" style="flex:2;padding:12px;font-size:14px">Merge</div></div>
+  </div>
+  <div class="card">
+   <div class="row" style="margin-bottom:8px"><span class="pill" style="background:var(--surface2);color:var(--muted)">Unknown sender · 07:55</span></div>
+   <div style="font-size:13px;color:var(--muted)">We couldn't parse this message. <b style="color:var(--accent)">Help us support this bank →</b></div>
+  </div>
+ </div>`],
+
+["06 · Budgets","Shared vs personal, progress, rollover",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Budgets</div><div class="chip">October ${I("chevD")}</div></div>
+  <div class="seg" style="margin-bottom:16px"><div class="on">Shared</div><div>Mine</div></div>
+  <div class="card" style="margin-bottom:12px">
+   <div class="row"><div><div style="font-size:12px;color:var(--muted)">Total budget</div><div class="money" style="font-size:22px">ETB 27,680 <span style="color:var(--muted);font-size:14px;font-weight:500">/ 42,000</span></div></div><div class="pill" style="background:var(--income-soft);color:var(--income)">On track</div></div>
+   <div class="bar" style="margin-top:12px"><i style="width:66%;background:var(--ink)"></i></div>
+   <div class="row" style="font-size:12px;color:var(--muted);margin-top:6px"><span>66% used</span><span>Day 6 of 31 · 19% elapsed</span></div>
+  </div>
+  <div class="card" style="padding:6px 16px">
+   ${[["home","Housing","12,000","12,000",100,"var(--ink)",null,""],["cart","Groceries","5,800","10,000",58,"var(--income)",null,""],["utensils","Eating out","4,200","5,000",84,"var(--warn)",["alert","Pace: will exceed by ~ETB 1,900","var(--warn-ink)"],""],["car","Transport","3,360","3,000",100,"var(--expense)",[null,"Over by ETB 360","var(--expense)"],"exp"],["bulb","Utilities","1,920","3,000",64,"var(--income)",null,""],["gift","Fun &amp; gifts","400","4,000",10,"var(--income)",null,"",true]].map(([ic,n,a,l,p,c,note,cls,ro],i,arr)=>`
+   <div style="padding:12px 0;${i<arr.length-1?"border-bottom:1px solid var(--line)":""}">
+    <div class="row"><span style="font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center">${I(ic,"color:var(--muted)")}${n}</span><span class="money ${cls}">${a} <span style="color:var(--muted);font-weight:500">/ ${l}</span>${ro?` <span class="pill" style="background:var(--accent-soft);color:var(--warn-ink)">+800 rollover</span>`:""}</span></div>
+    <div class="bar" style="margin-top:8px"><i style="width:${p}%;background:${c}"></i></div>
+    ${note?`<div style="font-size:11px;color:${note[2]};margin-top:4px;display:flex;gap:4px;align-items:center">${note[0]?I(note[0]):""}${note[1]}</div>`:""}
+   </div>`).join("")}
+  </div>
+  <div class="btn ghost" style="margin-top:12px">+ Add category budget</div>
+ </div>${TAB("Budgets")}`],
+
+["07 · Goals &amp; Household","Savings goals, debts, settle-up between partners",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Goals</div><div class="icon-btn">${I("plus")}</div></div>
+  <div class="card" style="margin-bottom:12px">
+   <div class="row"><div style="display:flex;gap:10px;align-items:center">${C("plane","var(--transfer-soft)","var(--transfer)")}<div><div style="font-weight:700;font-size:15px">Vacation — Zanzibar</div><div style="font-size:12px;color:var(--muted)">Shared · due Dec 2026</div></div></div><div class="avatar s b">S</div></div>
+   <div class="row" style="margin-top:12px"><span class="money" style="font-size:20px">ETB 65,000</span><span style="font-size:13px;color:var(--muted)">of 120,000</span></div>
+   <div class="bar" style="margin-top:8px"><i style="width:54%;background:var(--transfer)"></i></div>
+   <div class="row" style="font-size:12px;color:var(--muted);margin-top:6px"><span>54%</span><span>Need ETB 9,170 / month to hit goal</span></div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+   <div class="row"><div style="display:flex;gap:10px;align-items:center">${C("shield","var(--income-soft)","var(--income)")}<div><div style="font-weight:700;font-size:15px">Emergency fund</div><div style="font-size:12px;color:var(--muted)">Personal · Auto-save 10% of income</div></div></div></div>
+   <div class="row" style="margin-top:12px"><span class="money" style="font-size:20px">ETB 38,400</span><span style="font-size:13px;color:var(--muted)">of 150,000</span></div>
+   <div class="bar" style="margin-top:8px"><i style="width:26%;background:var(--income)"></i></div>
+  </div>
+  <div class="h3" style="margin-bottom:10px">Between you &amp; Sara</div>
+  <div class="card" style="margin-bottom:12px;background:var(--surface2)">
+   <div class="row">
+    <div style="display:flex;align-items:center;gap:10px"><div class="avatar">N</div><span style="color:var(--accent);font-size:18px">${I("arrowR")}</span><div class="avatar b">S</div></div>
+    <div style="text-align:right"><div style="font-size:12px;color:var(--muted)">You owe Sara</div><div class="money" style="font-size:20px">ETB 4,250</div></div>
+   </div>
+   <div style="font-size:12px;color:var(--muted);margin:10px 0 12px">Sara paid rent (12,000) + groceries; you paid utilities. Split 50/50.</div>
+   <div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:12px;font-size:14px;background:var(--surface)">Details</div><div class="btn" style="flex:1;padding:12px;font-size:14px">Settle up</div></div>
+  </div>
+  <div class="h3" style="margin:6px 0 10px">Debts</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("landmark","var(--expense-soft)","var(--expense)","Car loan — Awash Bank","I owe · 14 of 36 payments · 9.5%","182,000","exp")}
+   ${TX("user","var(--income-soft)","var(--income)","Dawit","Owes me · lent 20 Sep","3,000","inc")}
+  </div>
+ </div>${TAB("Budgets")}`],
+
+["08 · Insights","Money flow, trends, top merchants",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Insights</div><div class="chip">Oct 2026 ${I("chevD")}</div></div>
+  <div class="h3" style="margin-bottom:10px">Where money went</div>
+  <div class="card" style="padding:12px">
+   <svg width="100%" height="190" viewBox="0 0 320 190">
+    <rect x="6" y="20" width="14" height="150" rx="4" fill="var(--income)"/><text x="26" y="34" font-size="11" fill="var(--text)" font-weight="700">Income 58,000</text>
+    ${[[20,60,"var(--ink)","Savings 15,000"],[68,94,"var(--income)","Housing 12,000"],[102,124,"var(--expense)","Food 10,000"],[132,148,"var(--warn)","Transport 3,360"],[156,170,"var(--transfer)","Utilities 1,920"],[178,186,"var(--muted2)","Other 400"]].map(([ty,by,c,l],i,a)=>{const starts=[20,60,86,108,124,138,146];const y0=starts[i],y1=starts[i+1];return `<path d="M20 ${y0} C110 ${y0},110 ${ty},200 ${ty} L200 ${by} C110 ${by},110 ${y1},20 ${y1} Z" fill="${c}" opacity=".18"/><rect x="200" y="${ty}" width="10" height="${by-ty}" rx="3" fill="${c}"/><text x="216" y="${(ty+by)/2+4}" font-size="11" fill="var(--text)">${l}</text>`}).join("")}
+   </svg>
+  </div>
+  <div class="h3" style="margin:16px 0 10px">Spending trend</div>
+  <div class="card" style="padding:12px">
+   <svg width="100%" height="90" viewBox="0 0 320 90"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--expense)" stop-opacity=".25"/><stop offset="1" stop-color="var(--expense)" stop-opacity="0"/></linearGradient></defs>
+    <path d="M0 60 L55 48 L110 54 L165 30 L220 40 L275 22 L320 34 L320 90 L0 90 Z" fill="url(#g)"/><path d="M0 60 L55 48 L110 54 L165 30 L220 40 L275 22 L320 34" fill="none" stroke="var(--expense)" stroke-width="2.5" stroke-linejoin="round"/><path d="M0 64 L55 62 L110 58 L165 60 L220 56 L275 58 L320 54" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 4"/><circle cx="320" cy="34" r="4" fill="var(--expense)"/></svg>
+   <div class="legend"><span><i style="background:var(--expense)"></i>This month, daily</span><span><i style="background:var(--line)"></i>Avg. last 3 months</span></div>
+  </div>
+  <div class="h3" style="margin:16px 0 10px">Top merchants</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","8 visits · ↑ 12% vs Sep","-4,980","exp")}
+   ${TX("utensils","var(--expense-soft)","var(--expense)","Kaldi's Coffee","11 visits · ↑ 30% vs Sep","-2,750","exp")}
+   ${TX("car","var(--warn-soft)","var(--warn)","Ride","19 trips","-2,360","exp")}
+  </div>
+ </div>${TAB("Insights")}`],
+
+["09 · Transaction detail","Edit, split, receipt, actions",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div style="font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Back</div><div style="font-size:15px;color:var(--accent);font-weight:600">Edit</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+   ${C("cart","var(--income-soft)","var(--income)",64)}
+   <div style="font-size:34px;font-weight:800;letter-spacing:-.5px" class="exp">-ETB 1,240.00</div>
+   <div style="font-weight:600;font-size:16px">Shoa Supermarket</div>
+   <div style="display:flex;gap:6px"><span class="pill" style="background:var(--income-soft);color:var(--income)">Groceries</span><span class="pill" style="background:var(--surface2);color:var(--text)">${I("users")}Shared</span><span class="pill" style="background:var(--surface2);color:var(--muted)">${I("inbox")}Auto-captured</span></div>
+  </div>
+  <div class="card list" style="margin-top:20px;padding:2px 16px">
+   ${LR(null,"Account",`<span class="val" style="display:flex;gap:6px;align-items:center">${I("landmark")}CBE ••4821</span>`)}
+   ${LR(null,"Date",`<span class="val">Mon, 6 Oct 2026 · 09:12</span>`)}
+   ${LR(null,"Paid by",`<span class="val" style="display:flex;gap:6px;align-items:center"><span class="avatar s b">S</span>Sara</span>`)}
+   ${LR(null,"Split",`<span class="val">50 / 50 · you owe 620</span>`)}
+   ${LR(null,"Status",`<span class="pill" style="background:var(--income-soft);color:var(--income)">Cleared</span>`)}
+  </div>
+  <div class="card" style="margin-top:12px"><div class="h3" style="margin-bottom:8px">Note</div><div style="font-size:14px;line-height:1.45">Weekly groceries + stuff for Saturday dinner with Dawit &amp; Hana.</div></div>
+  <div class="card" style="margin-top:12px">
+   <div class="row" style="margin-bottom:10px"><div class="h3">Receipt</div><span style="font-size:13px;color:var(--accent);font-weight:600">+ Add</span></div>
+   <div style="display:flex;gap:10px;align-items:center"><div style="width:64px;height:80px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;font-size:24px;color:var(--muted)">${I("receipt")}</div><div><div style="font-weight:600;font-size:13px">receipt_0610.jpg</div><div style="font-size:12px;color:var(--muted)">Scanned · 12 items · total matches</div></div></div>
+  </div>
+  <div class="card list" style="margin-top:12px;padding:2px 16px">
+   ${LR("swap","Convert to transfer",I("chevR","color:var(--muted)"))}${LR("repeat","Make recurring",I("chevR","color:var(--muted)"))}${LR("target","Link to goal",I("chevR","color:var(--muted)"))}
+   <div class="lr" style="color:var(--expense)"><div class="ic" style="color:var(--expense)">${I("trash")}</div><span class="lbl">Delete transaction</span></div>
+  </div>
+ </div>`],
+
+["10 · Household invite","Members, QR / code invite, sharing defaults",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div style="font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Back</div><div style="font-weight:600;font-size:16px">Household</div><div style="width:40px"></div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+   <div style="display:flex"><div class="avatar" style="width:56px;height:56px;font-size:20px;border:3px solid var(--bg)">N</div><div class="avatar b" style="width:56px;height:56px;font-size:20px;margin-left:-12px;border:3px solid var(--bg)">S</div><div style="width:56px;height:56px;border-radius:50%;border:2px dashed var(--line);margin-left:-12px;display:grid;place-items:center;color:var(--muted);background:var(--bg);font-size:20px">${I("plus")}</div></div>
+   <div style="font-weight:700;font-size:22px">Naod &amp; Sara</div><div style="font-size:13px;color:var(--muted)">2 members · Base currency ETB</div>
+  </div>
+  <div class="h3" style="margin:20px 0 8px">Members</div>
+  <div class="card" style="padding:4px 16px">
+   <div class="txn"><div class="avatar" style="width:36px;height:36px">N</div><div class="t"><b>Naod (you)</b><small>naodk36@gmail.com</small></div><span class="pill" style="background:var(--accent-soft);color:var(--warn-ink)">Owner</span></div>
+   <div class="txn"><div class="avatar b" style="width:36px;height:36px">S</div><div class="t"><b>Sara</b><small>Joined 12 Sep 2026</small></div><span class="pill" style="background:var(--surface2);color:var(--muted)">Member</span></div>
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Invite a partner</div>
+  <div class="card" style="display:flex;flex-direction:column;align-items:center;gap:14px">
+   <div style="width:140px;height:140px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;color:var(--text);font-size:96px">${I("qr")}</div>
+   <div style="display:flex;gap:10px;align-items:center;background:var(--surface2);border-radius:12px;padding:10px 16px"><span style="font-weight:700;font-size:18px;letter-spacing:.08em">SNDK-7K2M-Q9</span><span style="color:var(--accent);font-size:18px">${I("copy")}</span></div>
+   <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.4">Share this code or link. It expires in 24 hours and can be used once.</div>
+   <div style="display:flex;gap:8px;width:100%"><div class="btn ghost" style="flex:1;padding:12px;font-size:14px;display:flex;gap:6px;justify-content:center;align-items:center">${I("link")}Copy link</div><div class="btn" style="flex:1;padding:12px;font-size:14px;display:flex;gap:6px;justify-content:center;align-items:center">${I("share")}Share…</div></div>
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Sharing defaults</div>
+  <div class="card list" style="padding:2px 16px">${LR("users","New transactions are shared",TG(true))}${LR("bell","Notify partner on new entry",TG(true))}${LR("eye","Partner can see my personal accounts",TG(false))}</div>
+ </div>`],
+
+["11 · Settings","Profile, household, auto-capture, security, app",`
+ <div class="content">
+  <div class="h2" style="font-size:24px;margin:10px 0 14px">Settings</div>
+  <div class="card" style="display:flex;gap:12px;align-items:center;padding:14px"><div class="avatar" style="width:48px;height:48px;font-size:18px">N</div><div style="flex:1"><div style="font-weight:700;font-size:16px">Naod Kassahun</div><div style="font-size:12px;color:var(--muted)">naodk36@gmail.com</div></div><span style="color:var(--muted)">${I("chevR")}</span></div>
+  ${[["Household",[["users","Naod &amp; Sara","2 members"],["coins","Base currency","ETB"],["landmark","Accounts","4"],["tag","Categories","18"]]],
+     ["Auto-capture",[["bell","Notification access",`<span class="pill" style="background:var(--income-soft);color:var(--income)">Enabled</span>`],["landmark","Banks detected","CBE, Dashen, Telebirr"],["zap","Auto-post trusted banks",TG(false)],["flask","Report unparsed messages",TG(true)]]],
+     ["Security &amp; data",[["shield","Secure your data",`<span class="val" style="display:flex;gap:4px;align-items:center"><span class="pill" style="background:var(--accent-soft);color:var(--warn-ink)">Not linked</span>${I("chevR")}</span>`],["lock","App lock","PIN + fingerprint"],["cloud","Sync",`<span class="pill" style="background:var(--surface2);color:var(--muted)">Up to date · 2m ago</span>`],["upload","Export data","CSV / PDF"],["trash","Delete account",null,true]]],
+     ["App",[["moon","Appearance","System"],["globe","Language","English"],["info","Version","1.0.0 (42) · OTA 7"]]]
+    ].map(([t,rows])=>`<div class="h3" style="margin:16px 0 8px">${t}</div><div class="card list" style="padding:2px 16px">${rows.map(([ic,l,v,danger])=>`<div class="lr" ${danger?'style="color:var(--expense)"':""}><div class="ic" ${danger?'style="color:var(--expense)"':""}>${I(ic)}</div><span class="lbl">${l}</span>${v==null?"":(v.startsWith("<")?v:`<span class="val" style="display:flex;gap:4px;align-items:center">${v}${I("chevR")}</span>`)}</div>`).join("")}</div>`).join("")}
+ </div>`],
+
+// ================= PHASE 1 ADDITIONS (device-first auth) =================
+["12 · Welcome","Device-first · no account required",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div style="flex:.7"></div>
+  <div style="width:72px;height:72px;border-radius:22px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;margin-bottom:20px"><svg width="52" height="52" viewBox="0 0 64 64" style="--logo-bg:var(--ink)"><rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/></svg></div>
+  <div style="font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.5px">sanduk</div>
+  <p style="color:var(--muted);font-size:15px;margin:8px 0 28px;line-height:1.45">Track every birr. Together.</p>
+  <div class="card" style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:500">
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Works offline</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Share with your partner</div>
+   <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Your data stays on your phone</div>
+  </div>
+  <div style="flex:1"></div>
+  <div class="btn">Get started</div>
+  <div style="text-align:center;color:var(--muted);font-size:14px;margin:16px 0 30px;font-weight:600">Already have an account? Restore</div>
+ </div>`],
+
+["13 · Restore account","Secondary route · only if an email was linked",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div style="margin:10px 0 30px;font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Back</div>
+  <div style="font-size:26px;font-weight:800;line-height:1.15">Restore your account</div>
+  <p style="color:var(--muted);font-size:15px;margin:10px 0 28px;line-height:1.45">Sign in with the email you linked on your other phone.</p>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">EMAIL</div>
+  <div class="search" style="margin-bottom:14px">${I("mail")} you@example.com</div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">PASSWORD</div>
+  <div class="search" style="color:var(--text);margin-bottom:20px;justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">${I("lock","color:var(--muted)")} ••••••••</span>${I("eye","color:var(--muted)")}</div>
+  <div class="btn">Continue</div>
+  <div class="notice" style="margin-top:14px;display:flex;gap:8px;align-items:flex-start;background:var(--surface2);color:var(--muted)">${I("info","margin-top:2px")}<span>Only needed if you linked an email on another phone.</span></div>
+  <div style="flex:1"></div>
+ </div>`],
+
+["14 · Onboarding — Currency","Step 1 · base currency · sticky action bar",`
+ <div class="content" style="display:flex;flex-direction:column">
+  ${STEPS(1)}
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:10px">What's your main currency?</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.45;margin-bottom:18px">Everything is summarised in this currency. You can still add accounts in others.</p>
+  <div class="search" style="margin-bottom:12px">${I("search")} Search currency…</div>
+  <div class="card list" style="padding:2px 10px">
+   ${[["ETB","Ethiopian Birr","Br",true],["USD","US Dollar","$"],["EUR","Euro","€"],["GBP","British Pound","£"],["KES","Kenyan Shilling","KSh"],["AED","UAE Dirham","د.إ"],["SAR","Saudi Riyal","﷼"],["CNY","Chinese Yuan","¥"],["INR","Indian Rupee","₹"]].map(([c,n,s,on])=>`<div class="lr" style="padding:10px 6px;white-space:nowrap;${on?"background:var(--surface2);border-radius:12px;border-bottom:0":""}"><div class="ic" style="width:36px;height:36px;border-radius:10px;font-weight:700;font-size:13px;background:${on?"var(--surface)":"var(--surface2)"}">${s}</div><span class="lbl" style="overflow:hidden;text-overflow:ellipsis"><b>${c}</b> <span style="color:var(--muted);font-weight:400">${n}</span></span>${on?`<span style="color:var(--accent);font-size:18px">${I("check")}</span>`:""}</div>`).join("")}
+  </div>
+ </div>
+ <div class="actionbar"><div class="btn">Continue</div></div>`],
+
+["15 · Onboarding — First account","Step 2 · create account · sticky action bar",`
+ <div class="content" style="display:flex;flex-direction:column">
+  ${STEPS(2)}
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:10px">Add your first account</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.45;margin-bottom:18px">Where does your money live? You can add more later.</p>
+  <div class="chips" style="margin-bottom:16px"><div class="chip on">${I("landmark")}Bank</div><div class="chip">${I("wallet")}Cash</div><div class="chip">${I("phone")}Mobile money</div><div class="chip">${I("coins")}Card</div></div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">NAME</div>
+  <div class="search" style="color:var(--text);margin-bottom:14px">CBE ••4821</div>
+  <div style="display:flex;gap:10px;margin-bottom:14px">
+   <div style="flex:2"><div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">OPENING BALANCE</div><div class="search money" style="color:var(--text)">24,500.00</div></div>
+   <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">CURRENCY</div><div class="search" style="color:var(--text);justify-content:space-between">ETB ${I("chevD")}</div></div>
+  </div>
+  <div class="card list" style="padding:2px 16px">${LR("users","Share with household",TG(true))}</div>
+ </div>
+ <div class="actionbar"><div class="btn">Continue</div><div style="text-align:center;color:var(--muted);font-size:14px;margin-top:14px;font-weight:600">Skip for now</div></div>`],
+
+["16 · Onboarding — Set PIN","Step 3 · 4-digit PIN · keypad is the action",`
+ <div class="content" style="display:flex;flex-direction:column;align-items:center">
+  <div style="align-self:stretch">${STEPS(3)}</div>
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:10px;align-self:flex-start">Set a 4-digit PIN</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.45;margin-bottom:34px;align-self:flex-start">You'll use it to unlock Sanduk. Add fingerprint next.</p>
+  <div style="margin-bottom:36px">${DOTS(2)}</div>
+  <div class="keypad" style="width:100%;max-width:280px">${["1","2","3","4","5","6","7","8","9","","0",I("del")].map(k=>`<div class="key round" style="${k===""?"background:transparent":""}">${k}</div>`).join("")}</div>
+  <div style="flex:1"></div>
+ </div>`],
+
+["17 · Onboarding — Biometrics & done","Step 4 · fingerprint / face unlock · summary",`
+ <div class="content" style="display:flex;flex-direction:column">
+  ${STEPS(4)}
+  <div style="width:84px;height:84px;border-radius:26px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:44px;margin-bottom:22px">${I("fingerprint")}</div>
+  <div style="font-size:26px;font-weight:800;line-height:1.15;margin-bottom:10px">Unlock with fingerprint?</div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.45;margin-bottom:18px">Faster than a PIN. Your PIN still works as a backup.</p>
+  <div class="card list" style="padding:2px 16px;margin-bottom:12px">${LR("fingerprint","Use fingerprint / face unlock",TG(true))}</div>
+  <div class="card" style="background:var(--surface2);border:0">
+   <div class="h3" style="margin-bottom:10px;display:flex;gap:6px;align-items:center"><span style="color:var(--income)">${I("shield-check")}</span>You're set</div>
+   <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+    <div class="row"><span style="color:var(--muted)">Base currency</span><b>ETB</b></div>
+    <div class="row"><span style="color:var(--muted)">Accounts</span><b>1 account</b></div>
+    <div class="row"><span style="color:var(--muted)">App lock</span><b style="display:flex;gap:4px;align-items:center">${I("lock","color:var(--muted)")}PIN enabled</b></div>
+   </div>
+  </div>
+ </div>
+ <div class="actionbar"><div class="btn">Finish setup</div></div>`],
+
+["18 · Accounts","All accounts, net worth, shared/personal",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Accounts</div><div class="icon-btn">${I("plus")}</div></div>
+  <div class="card hero">
+   <div style="font-size:12px;opacity:.8">Net worth</div>
+   <div style="font-size:30px;font-weight:800;margin:4px 0 2px">ETB 128,340</div>
+   <div style="font-size:12px;opacity:.8;display:flex;gap:4px;align-items:center">${I("arrowUp")} +6,200 this month</div>
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Shared</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("landmark","var(--surface2)","var(--text)","CBE ••4821","Bank · Naod","58,420","")}
+   ${TX("home","var(--surface2)","var(--text)","Joint savings","Bank · Awash","65,000","")}
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Personal</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("phone","var(--surface2)","var(--text)","Telebirr","Mobile money","3,120","")}
+   ${TX("wallet","var(--surface2)","var(--text)","Cash","Wallet","1,800","")}
+   ${TX("coins","var(--expense-soft)","var(--expense)","Visa ••0931","Card · USD · $-120.00","-6,000","exp")}
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Liabilities</div>
+  <div class="card" style="padding:4px 16px">${TX("landmark","var(--expense-soft)","var(--expense)","Car loan — Awash","Loan · 9.5%","-182,000","exp")}</div>
+ </div>${TAB("Home")}`],
+
+["19 · Account detail","Balance history + per-account transactions",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div style="font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Accounts</div><div class="icon-btn">${I("settings")}</div></div>
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">${C("landmark","var(--surface2)","var(--text)",48)}<div><div style="font-weight:700;font-size:18px">CBE ••4821</div><div style="font-size:12px;color:var(--muted)">Bank · Shared · ETB</div></div></div>
+  <div class="card">
+   <div style="font-size:12px;color:var(--muted)">Current balance</div>
+   <div class="money" style="font-size:30px">ETB 58,420</div>
+   <svg width="100%" height="70" viewBox="0 0 320 70" style="margin-top:8px"><path d="M0 50 L50 44 L100 48 L150 20 L200 30 L250 26 L320 14" fill="none" stroke="var(--income)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="320" cy="14" r="4" fill="var(--income)"/></svg>
+   <div class="row" style="font-size:12px;color:var(--muted)"><span>30 days</span><span class="inc" style="font-weight:600">+ETB 12,400</span></div>
+  </div>
+  <div class="chips" style="margin:14px 0 4px"><div class="chip on">All</div><div class="chip">In</div><div class="chip">Out</div><div class="chip">Transfers</div></div>
+  <div class="day"><span>Today</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","Groceries · Sara","-1,240","exp")}
+   ${TX("briefcase","var(--surface2)","var(--text)","Salary — Oct","Income","+58,000","inc")}
+  </div>
+  <div class="day"><span>Yesterday</span></div>
+  <div class="card" style="padding:4px 16px">${TX("swap","var(--transfer-soft)","var(--transfer)","→ Joint savings","Transfer","-5,000","trf")}</div>
+ </div>${TAB("Home")}`],
+
+["20 · Categories","Manage, reorder, nest, pick icon & color",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div style="font-size:15px;color:var(--accent);font-weight:600;display:flex;align-items:center">${I("chevL")}Settings</div><div style="font-weight:600;font-size:16px">Categories</div><div style="font-size:15px;color:var(--accent);font-weight:600">Edit</div></div>
+  <div class="seg" style="margin-bottom:14px"><div class="on">Expense</div><div>Income</div></div>
+  <div class="card" style="padding:4px 16px">
+   ${[["cart","Groceries","var(--income-soft)","var(--income)","3 sub"],["utensils","Eating out","var(--expense-soft)","var(--expense)",""],["car","Transport","var(--warn-soft)","var(--warn)","Taxi · Fuel · Bus"],["home","Housing","var(--surface2)","var(--text)","Rent · Utilities"],["pill","Health","var(--expense-soft)","var(--expense)",""],["gift","Fun &amp; gifts","var(--income-soft)","var(--income)",""],["bulb","Utilities","var(--transfer-soft)","var(--transfer)",""]].map(([ic,n,bg,fg,s])=>`<div class="txn">${C(ic,bg,fg)}<div class="t"><b>${n}</b>${s?`<small>${s}</small>`:""}</div><span style="color:var(--muted2);display:flex;gap:10px;align-items:center">${I("chevR")}<span style="letter-spacing:-2px">≡</span></span></div>`).join("")}
+  </div>
+  <div class="btn ghost" style="margin-top:12px;display:flex;gap:6px;justify-content:center;align-items:center">${I("plus")}New category</div>
+ </div>
+ <div class="sheet" style="padding-bottom:20px">
+  <div class="handle"></div>
+  <div class="h2" style="margin-bottom:12px">New category</div>
+  <div class="search" style="color:var(--text);margin-bottom:12px">Coffee</div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">ICON</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${["utensils","cart","car","home","gift","pill","bulb","plane","briefcase","coins"].map((n,i)=>`<div style="width:40px;height:40px;border-radius:12px;background:${i===0?"var(--ink)":"var(--surface2)"};color:${i===0?"var(--on-ink)":"var(--text)"};display:grid;place-items:center;font-size:18px">${I(n)}</div>`).join("")}</div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">COLOR</div>
+  <div style="display:flex;gap:10px;margin-bottom:14px">${["#F97316","#16A34A","#DC2626","#2563EB","#A855F7","#0D9488","#71717A"].map((c,i)=>`<div style="width:28px;height:28px;border-radius:50%;background:${c};outline:${i===0?"3px solid var(--text)":"none"};outline-offset:2px"></div>`).join("")}</div>
+  <div class="btn">Save</div>
+ </div>`],
+
+["21 · Create budget","Period, categories, limits, rollover",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div style="font-size:15px;color:var(--accent);font-weight:600">Cancel</div><div style="font-weight:600;font-size:16px">New budget</div><div style="font-size:15px;color:var(--accent);font-weight:700">Save</div></div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">NAME</div>
+  <div class="search" style="color:var(--text);margin-bottom:14px">Monthly essentials</div>
+  <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">PERIOD</div>
+  <div class="seg" style="margin-bottom:14px"><div>Weekly</div><div class="on">Monthly</div><div>Custom</div></div>
+  <div class="card list" style="padding:2px 16px;margin-bottom:14px">${LR("calendar","Starts on","<span class='val'>1st of month</span>")}${LR("repeat","Roll over unspent",TG(true))}${LR("users","Shared with household",TG(true))}</div>
+  <div class="row" style="margin-bottom:8px"><div class="h3">Category limits</div><span style="font-size:13px;color:var(--accent);font-weight:600">+ Add</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${[["home","Housing","var(--surface2)","var(--text)","12,000"],["cart","Groceries","var(--income-soft)","var(--income)","10,000"],["utensils","Eating out","var(--expense-soft)","var(--expense)","5,000"],["car","Transport","var(--warn-soft)","var(--warn)","3,000"]].map(([ic,n,bg,fg,v])=>`<div class="txn">${C(ic,bg,fg)}<div class="t"><b>${n}</b></div><div class="chip" style="padding:6px 10px;font-weight:600">ETB ${v}</div></div>`).join("")}
+  </div>
+  <div class="card" style="margin-top:12px;background:var(--surface2);border:0"><div class="row"><span style="font-size:13px;color:var(--muted)">Total limit</span><span class="money" style="font-size:18px">ETB 30,000</span></div><div style="font-size:12px;color:var(--muted);margin-top:4px">≈ 52% of average monthly income</div></div>
+ </div>`],
+
+["22 · Empty states","First-run / nothing yet",`
+ <div class="content" style="display:flex;flex-direction:column">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Transactions</div><div class="icon-btn">${I("updown")}</div></div>
+  <div class="search">${I("search")} Search payee, note, amount…</div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 20px;gap:12px">
+   <div style="width:96px;height:96px;border-radius:30px;background:var(--surface2);color:var(--muted);display:grid;place-items:center;font-size:44px">${I("receipt")}</div>
+   <div style="font-size:20px;font-weight:700">No transactions yet</div>
+   <p style="color:var(--muted);font-size:14px;line-height:1.5">Tap <b style="color:var(--accent)">+</b> to add your first expense, or turn on auto-capture to pull them from your bank alerts.</p>
+   <div class="btn" style="padding:12px 20px;font-size:14px;display:flex;gap:6px;align-items:center;margin-top:6px">${I("bell")}Enable auto-capture</div>
+   <div style="font-size:13px;color:var(--accent);font-weight:600">Import from CSV</div>
+  </div>
+  <div class="card" style="margin-bottom:14px;background:var(--surface2);border:0;display:flex;gap:12px;align-items:center;padding:12px"><div style="color:var(--muted)">${I("info")}</div><div style="font-size:12px;color:var(--muted);line-height:1.4">Other empty states follow the same pattern: icon · title · one-line help · primary action · secondary link.</div></div>
+ </div>${TAB("Transactions")}`],
+
+["23 · App lock","PIN / biometric gate",`
+ <div class="content" style="display:flex;flex-direction:column;align-items:center">
+  <div style="flex:.7"></div>
+  <div style="width:72px;height:72px;border-radius:22px;background:var(--surface2);color:var(--text);display:grid;place-items:center;font-size:34px;margin-bottom:18px">${I("lock")}</div>
+  <div style="font-size:22px;font-weight:700">Sanduk is locked</div>
+  <div style="font-size:14px;color:var(--muted);margin:6px 0 28px">Enter your PIN or use fingerprint</div>
+  <div style="margin-bottom:36px">${DOTS(3)}</div>
+  <div class="keypad" style="width:100%;max-width:280px">${["1","2","3","4","5","6","7","8","9",I("fingerprint","color:var(--text)"),"0",I("del")].map(k=>`<div class="key round">${k}</div>`).join("")}</div>
+  <div style="flex:1"></div>
+  <div style="font-size:14px;color:var(--muted);font-weight:600;margin-bottom:34px">Forgot PIN?</div>
+ </div>`],
+
+["24 · Sync & offline states","Banners, indicators, conflicts",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px"><div class="h2" style="font-size:24px">Home</div><div class="pill" style="background:var(--surface2);color:var(--muted)">${I("cloud")}Synced · 2m</div></div>
+  <div class="h3" style="margin:8px 0 8px">Indicator states (header pill)</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+   <div class="pill" style="background:var(--surface2);color:var(--muted);width:max-content">${I("cloud")}Synced · just now</div>
+   <div class="pill" style="background:var(--surface2);color:var(--muted);width:max-content">${I("repeat")}Syncing 3 changes…</div>
+   <div class="pill" style="background:var(--accent-soft);color:var(--warn-ink);width:max-content">${I("cloud")}Offline · 5 pending</div>
+   <div class="pill" style="background:var(--expense-soft);color:var(--expense);width:max-content">${I("alert")}Sync failed · tap to retry</div>
+  </div>
+  <div class="h3" style="margin:0 0 8px">Banners (top of screen)</div>
+  <div class="card" style="background:var(--surface2);border:0;display:flex;gap:10px;align-items:center;padding:12px;margin-bottom:8px"><span style="color:var(--muted)">${I("cloud")}</span><div style="flex:1;font-size:13px"><b>You're offline.</b> Changes are saved on this phone and will sync when you're back.</div></div>
+  <div class="card" style="background:var(--expense-soft);border:0;display:flex;gap:10px;align-items:center;padding:12px;margin-bottom:8px"><span style="color:var(--expense)">${I("alert")}</span><div style="flex:1;font-size:13px"><b>Couldn't sync 2 items.</b> Check your connection.</div><span style="font-size:13px;font-weight:700;color:var(--expense)">Retry</span></div>
+  <div class="card" style="background:var(--accent-soft);border:0;display:flex;gap:10px;align-items:center;padding:12px;margin-bottom:8px"><span style="color:var(--accent)">${I("arrowUp")}</span><div style="flex:1;font-size:13px"><b>Update required.</b> This version can no longer sync.</div><span style="font-size:13px;font-weight:700;color:var(--accent)">Update</span></div>
+  <div class="card" style="background:var(--accent-soft);border:0;display:flex;gap:10px;align-items:center;padding:12px;margin-bottom:18px"><span style="color:var(--accent)">${I("shield")}</span><div style="flex:1;font-size:13px"><b>Secure your data</b> — link an email so you can restore on a new phone.</div><span style="font-size:13px;font-weight:700;color:var(--accent)">Link</span></div>
+  <div class="h3" style="margin:0 0 8px">Row-level pending marker</div>
+  <div class="card" style="padding:4px 16px">
+   <div class="txn">${C("cart","var(--income-soft)","var(--income)")}<div class="t"><b>Shoa Supermarket</b><small>${I("cloud","opacity:.6")} Waiting to sync</small></div><div class="money exp" style="opacity:.6">-1,240</div></div>
+   ${TX("utensils","var(--expense-soft)","var(--expense)","Kaldi's Coffee","Eating out · synced","-1,000","exp")}
+  </div>
+  <div class="h3" style="margin:18px 0 8px">Conflict (rare — partner edited same row)</div>
+  <div class="card" style="padding:12px"><div style="font-size:13px;margin-bottom:10px"><b>Sara also edited this.</b> Keep which version?</div><div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:10px;font-size:13px">Mine · 1,240</div><div class="btn" style="flex:1;padding:10px;font-size:13px">Sara's · 1,420</div></div></div>
+ </div>${TAB("Home")}`],
+];
+
+// ================= COMPONENT SHEET =================
+const COMPONENTS=`
+<div class="comp-grid">
+ <section><h4>Buttons</h4>
+  <div class="btn">Primary</div><div class="btn ghost">Secondary</div><div class="btn accent">Accent (rare)</div><div class="btn" style="opacity:.5">Disabled</div>
+  <div class="btn" style="padding:12px;font-size:14px">Small primary</div><div class="btn ghost" style="padding:12px;font-size:14px;display:flex;gap:6px;justify-content:center;align-items:center">${I("plus")}With icon</div>
+  <div style="display:flex;gap:8px"><div class="icon-btn">${I("bell")}</div><div class="icon-btn" style="position:relative">${I("inbox")}<span class="badge">3</span></div><div class="fab" style="position:static;transform:none">${I("plus")}</div></div>
+ </section>
+ <section><h4>Inputs</h4>
+  <div><div class="lbl">LABEL</div><div class="search" style="color:var(--text)">Filled value</div></div>
+  <div><div class="lbl">PLACEHOLDER</div><div class="search">${I("search")} Search…</div></div>
+  <div><div class="lbl">FOCUSED</div><div class="search" style="color:var(--text);border:2px solid var(--accent)">Typing|</div></div>
+  <div><div class="lbl">ERROR</div><div class="search" style="color:var(--text);border-color:var(--expense)">abc</div><div style="font-size:12px;color:var(--expense);margin-top:4px;display:flex;gap:4px;align-items:center">${I("alert")}Enter a valid amount</div></div>
+  <div><div class="lbl">SELECT</div><div class="search" style="color:var(--text);justify-content:space-between">ETB ${I("chevD")}</div></div>
+  <div class="seg"><div class="on">Option A</div><div>Option B</div><div>Option C</div></div>
+ </section>
+ <section><h4>Chips &amp; pills</h4>
+  <div class="chips" style="flex-wrap:wrap"><div class="chip on">Selected</div><div class="chip">Default</div><div class="chip">${I("cart")}With icon</div><div class="chip">Dropdown ${I("chevD")}</div><div class="chip" style="opacity:.5">Disabled</div></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+   <span class="pill" style="background:var(--income-soft);color:var(--income)">On track</span>
+   <span class="pill" style="background:var(--accent-soft);color:var(--warn-ink)">Warning</span>
+   <span class="pill" style="background:var(--expense-soft);color:var(--expense)">Over budget</span>
+   <span class="pill" style="background:var(--transfer-soft);color:var(--transfer)">Transfer</span>
+   <span class="pill" style="background:var(--surface2);color:var(--muted)">Neutral</span>
+   <span class="pill" style="background:var(--ink);color:var(--on-ink)">Owner</span>
+  </div>
+ </section>
+ <section><h4>Money &amp; category icons</h4>
+  <div style="display:flex;gap:16px;font-size:18px"><span class="money exp">-1,240.00</span><span class="money inc">+58,000</span><span class="money trf">5,000</span><span class="money">ETB 128,340</span></div>
+  <div style="font-size:12px;color:var(--muted)">Always tabular-nums · sign + color encode direction · currency code prefix when ambiguous</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${C("cart","var(--income-soft)","var(--income)")}${C("utensils","var(--expense-soft)","var(--expense)")}${C("car","var(--warn-soft)","var(--warn)")}${C("swap","var(--transfer-soft)","var(--transfer)")}${C("home","var(--surface2)","var(--text)")}${C("alert","var(--warn-soft)","var(--warn)")}${C("briefcase","var(--surface2)","var(--text)")}</div>
+ </section>
+ <section><h4>Progress</h4>
+  <div class="bar"><i style="width:40%;background:var(--income)"></i></div>
+  <div class="bar"><i style="width:84%;background:var(--warn)"></i></div>
+  <div class="bar"><i style="width:100%;background:var(--expense)"></i></div>
+  <div style="display:flex;gap:12px">${[["58%","var(--income)",58],["84%","var(--warn)",84],["112%","var(--expense)",100]].map(([t,c,d])=>`<div style="width:56px;height:56px;border-radius:50%;background:conic-gradient(${c} 0 ${d}%,var(--surface2) ${d}% 100%);display:grid;place-items:center"><div style="width:42px;height:42px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:11px;font-weight:700">${t}</div></div>`).join("")}</div>
+  <div style="font-size:12px;color:var(--muted)">Green &lt;75% · Orange 75–100% · Red &gt;100%</div>
+ </section>
+ <section><h4>Toggles, avatars, list rows</h4>
+  <div style="display:flex;gap:12px;align-items:center">${TG(true)}${TG(false)}<div class="avatar">N</div><div class="avatar b">S</div><div class="avatar s">N</div></div>
+  <div class="card list" style="padding:2px 16px">${LR("bell","Setting with toggle",TG(true))}${LR("lock","Setting with value","<span class='val' style='display:flex;gap:4px;align-items:center'>Face ID "+I("chevR")+"</span>")}<div class="lr" style="color:var(--expense)"><div class="ic" style="color:var(--expense)">${I("trash")}</div><span class="lbl">Destructive row</span></div></div>
+ </section>
+ <section><h4>Feedback</h4>
+  <div class="card" style="background:var(--ink);color:var(--on-ink);border:0;padding:12px 14px;display:flex;gap:10px;align-items:center;border-radius:12px">${I("check")}<span style="flex:1;font-size:13px">Expense saved</span><b style="font-size:13px;color:var(--accent)">Undo</b></div>
+  <div class="card" style="background:var(--expense-soft);border:0;padding:12px;display:flex;gap:10px;align-items:center"><span style="color:var(--expense)">${I("alert")}</span><span style="font-size:13px">Something went wrong</span></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-weight:700;font-size:16px;margin-bottom:6px">Delete transaction?</div><div style="font-size:13px;color:var(--muted);margin-bottom:14px">This can't be undone. Sara will see it removed too.</div><div style="display:flex;gap:8px"><div class="btn ghost" style="flex:1;padding:12px;font-size:14px">Cancel</div><div class="btn" style="flex:1;padding:12px;font-size:14px;background:var(--expense);color:#fff">Delete</div></div></div>
+  <div style="display:flex;gap:10px"><div class="skel" style="width:40px;height:40px;border-radius:12px"></div><div style="flex:1"><div class="skel" style="height:12px;width:60%;margin-bottom:8px"></div><div class="skel" style="height:10px;width:40%"></div></div></div>
+ </section>
+ <section><h4>PIN &amp; lock</h4>
+  <div><div class="lbl">PIN DOTS (2 OF 4)</div>${DOTS(2)}</div>
+  <div><div class="lbl">KEYPAD KEYS · digit · biometric · backspace</div><div style="display:flex;gap:10px"><div class="key round" style="margin:0">7</div><div class="key round" style="margin:0">${I("fingerprint")}</div><div class="key round" style="margin:0">${I("del")}</div></div></div>
+  <div><div class="lbl">STEP PROGRESS</div>${STEPS(2).replace('class="caption"','class="caption" style="margin-bottom:0"')}</div>
+  <div style="font-size:12px;color:var(--muted)">Dots and keys use ink/text, never orange. Biometric key sits bottom-left; backspace bottom-right.</div>
+ </section>
+</div>`;
+
+// ================= LOGO CONCEPTS =================
+const GEEZ='font-family:"Nyala","Ebrima","Abyssinica SIL","Noto Sans Ethiopic","Kefa",sans-serif;';
+const LOGOS={ BOX:`<rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/>` };
+const LOGO_INFO={ BOX:["Sanduk � Box (v1)","sanduk","Rounded box, orange lid lifting open, coin slot. Placeholder-final until we revisit branding."] };
+const L=(k,sz,bg)=>`<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" style="--logo-bg:${bg||"var(--surface)"}">${LOGOS[k]}</svg>`;
+const APPICON=(k,bg,fg,sz=60)=>`<div style="width:${sz}px;height:${sz}px;border-radius:${sz*0.225}px;background:${bg};color:${fg};display:grid;place-items:center;--logo-bg:${bg}">${L(k,sz*0.72,bg)}</div>`;
+
+function logoScreens(k,th){ const dark=th==="dark"; const NAME=LOGO_INFO[k][1];
+  const signin=`<div class="screen">${STATUS}<div class="content" style="display:flex;flex-direction:column;align-items:center;text-align:center">
+   <div style="flex:.8"></div>
+   ${APPICON(k,"var(--ink)","var(--on-ink)",88)}
+   <div style="font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:22px">${NAME}</div>
+   <p style="color:var(--muted);font-size:15px;margin:8px 0 34px">Track every birr. Together.</p>
+   <div class="btn" style="width:100%">Get started</div>
+   <div style="flex:1"></div>
+   <p style="color:var(--muted);font-size:14px;font-weight:600;margin-bottom:28px">Already have an account? Restore</p></div></div>`;
+  const home=`<div class="screen">${STATUS}<div class="content">
+   <div class="row" style="margin:10px 0 16px"><div style="display:flex;align-items:center;gap:10px;color:var(--text)">${L(k,30)}<div style="font-weight:800;font-size:18px;letter-spacing:-.3px">${NAME}</div></div><div style="display:flex;gap:8px"><div class="icon-btn" style="position:relative">${I("inbox")}<span class="badge">3</span></div><div class="avatar">N</div></div></div>
+   <div class="card hero"><div style="font-size:12px;opacity:.8">Safe to spend · October</div><div style="font-size:34px;font-weight:800;margin:4px 0 2px">ETB 14,320</div><div style="font-size:12px;opacity:.8">of 42,000 budget · 24 days left</div><div class="bar" style="margin-top:14px"><i style="width:66%;background:var(--accent)"></i></div></div>
+   <div class="h3" style="margin:22px 0 10px">Home-screen icon</div>
+   <div style="display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap">
+    <div style="text-align:center;font-size:11px;color:var(--muted)">${APPICON(k,"#FAFAFA","#18181B")}<div style="margin-top:6px">Light</div></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted)">${APPICON(k,"#0A0A0A","#FAFAFA")}<div style="margin-top:6px">Dark</div></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted)">${APPICON(k,"#F97316","#18181B")}<div style="margin-top:6px">Orange</div></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted)">${APPICON(k,"#18181B","#FAFAFA")}<div style="margin-top:6px">Ink</div></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted)">${APPICON(k,"#FAFAFA","#18181B",28)}<div style="margin-top:6px">Tiny</div></div>
+   </div>
+   <div class="h3" style="margin:22px 0 10px">Splash</div>
+   <div class="card" style="background:var(--ink);color:var(--on-ink);border:0;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;--logo-bg:var(--ink)">${L(k,44,"var(--ink)")}<div style="font-weight:800;font-size:16px;letter-spacing:-.3px">${NAME}</div></div>
+  </div></div>`;
+  return [signin,home];
+}
+function renderLogos(mode){
+  const el=document.getElementById("logo-pick");const th=mode==="dark"?"dark":"light";
+  el.innerHTML=`<h2 style="font-size:18px;margin:8px 0 4px;color:${mode==="dark"?"#D4D4D8":"#3F3F46"}">Brand</h2><p class="sub">The v1 mark on Welcome, in the Home header, as home-screen icons, and on the splash. Shown in the ${th} theme — toggle above to compare.</p>
+  <div class="grid">${Object.keys(LOGOS).map(k=>{const [a,b]=logoScreens(k,th);return `<div class="frame-wrap"><div class="label" style="font-size:16px">${k} · ${LOGO_INFO[k][0]}<span>${LOGO_INFO[k][1]}</span></div><div style="display:flex;gap:16px"><div class="phone" data-theme="${th}">${a}</div><div class="phone" data-theme="${th}">${b}</div></div></div>`}).join("")}</div>
+  <hr style="border:0;border-top:1px solid #CBD5E1;margin:36px 0 12px">`;
+}
+
+// ================= EXPERIMENT: FLOATING DOCK =================
+const DOCK_TABS=[["Home","home"],["Transactions","list"],["Budgets","pie"],["Insights","barchart"]];
+const DK=(cls,active)=>DOCK_TABS.map(([n,ic])=>`<div class="dk ${n===active?"active":""}">${I(ic)}<span>${n}</span></div>`).join("");
+const DOCKS={
+ A:{name:"A · Pill dock + raised +",note:"Floating pill with 4 tabs (labels), active tab = ink capsule. Separate orange + raised beside it, slightly higher. Closest to your idea.",
+    html:(a)=>`<div class="fdock"><div class="pilldock">${DK("",a)}</div><div class="ffab raised">${I("plus")}</div></div>`},
+ B:{name:"B · Split dock, + in the middle",note:"Two pills (2 tabs each) with the big orange + floating between them — keeps the + dead-centre where your thumb lands.",
+    html:(a)=>`<div class="fdock" style="gap:10px"><div class="pilldock compact">${DOCK_TABS.slice(0,2).map(([n,ic])=>`<div class="dk ${n===a?"active":""}">${I(ic)}</div>`).join("")}</div><div class="ffab raised">${I("plus")}</div><div class="pilldock compact">${DOCK_TABS.slice(2).map(([n,ic])=>`<div class="dk ${n===a?"active":""}">${I(ic)}</div>`).join("")}</div></div>`},
+ C:{name:"C · Icon-only pill, + inside",note:"One compact glass pill, icons only, active = orange tint. The + lives inside the pill as an ink circle — most minimal, least screen cost.",
+    html:(a)=>`<div class="fdock"><div class="pilldock compact glass">${DOCK_TABS.slice(0,2).map(([n,ic])=>`<div class="dk ${n===a?"active":""}">${I(ic)}</div>`).join("")}<div class="ffab ink inpill">${I("plus")}</div>${DOCK_TABS.slice(2).map(([n,ic])=>`<div class="dk ${n===a?"active":""}">${I(ic)}</div>`).join("")}</div></div>`},
+ D:{name:"D · Expanding label (iOS-style)",note:"Icons only, but the active tab expands to show its label in an ink capsule. + floats to the right. Feels premium and animates nicely.",
+    html:(a)=>`<div class="fdock"><div class="pilldock labelsel glass">${DK("",a)}</div><div class="ffab">${I("plus")}</div></div>`},
+};
+function homeBody(dockHtml){return `<div class="screen">${STATUS}<div class="content" style="padding-bottom:0">
+  <div class="row" style="margin:10px 0 16px"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">N</div><div><div style="font-size:12px;color:var(--muted)">Household</div><div style="font-weight:700;font-size:15px">Naod &amp; Sara</div></div></div><div style="display:flex;gap:8px"><div class="icon-btn" style="position:relative">${I("inbox")}<span class="badge">3</span></div><div class="icon-btn">${I("bell")}</div></div></div>
+  <div class="card hero"><div style="font-size:12px;opacity:.8">Safe to spend · October</div><div style="font-size:34px;font-weight:800;margin:4px 0 2px;letter-spacing:-.5px">ETB 14,320</div><div style="font-size:12px;opacity:.8">of 42,000 budget · 24 days left</div><div class="bar" style="margin-top:14px"><i style="width:66%;background:var(--accent)"></i></div></div>
+  <div class="row" style="margin:18px 0 10px"><div class="h3">Budgets</div><span style="font-size:13px;color:var(--accent);font-weight:600">See all</span></div>
+  <div style="display:flex;gap:10px;overflow:hidden">${[["cart","Groceries",58,"var(--income)"],["utensils","Eating out",84,"var(--warn)"],["car","Transport",100,"var(--expense)"]].map(([ic,n,d,c])=>`<div class="card" style="min-width:122px;padding:12px;text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:conic-gradient(${c} 0 ${d}%,var(--surface2) ${d}% 100%);margin:0 auto;display:grid;place-items:center"><div style="width:50px;height:50px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:700">${d===100?"112%":d+"%"}</div></div><div style="font-size:13px;font-weight:600;margin-top:8px;display:flex;gap:5px;justify-content:center;align-items:center">${I(ic,"color:var(--muted)")}${n}</div></div>`).join("")}</div>
+  <div class="row" style="margin:18px 0 6px"><div class="h3">Recent</div></div>
+  <div class="card" style="padding:4px 16px">${TX("cart","var(--income-soft)","var(--income)","Shoa Supermarket","Groceries · Sara","-1,240","exp")}${TX("briefcase","var(--surface2)","var(--text)","Salary — Oct","Income · CBE ••4821","+58,000","inc")}${TX("utensils","var(--expense-soft)","var(--expense)","Kaldi's Coffee","Eating out · You","-1,000","exp")}</div>
+  <div style="height:110px"></div>
+ </div>${dockHtml}</div>`;}
+function renderExperiment(mode){
+  const el=document.getElementById("experiment");const th=mode==="dark"?"dark":"light";
+  el.innerHTML=`<h2 style="font-size:18px;margin:8px 0 4px;color:${mode==="dark"?"#D4D4D8":"#3F3F46"}">Experiment — floating dock</h2><p class="sub">Replacing the fixed tab bar with a floating dock; the orange + stays as a hovering button. Shown on Home in the ${th} theme — toggle above to compare. Content scrolls under the dock; last item gets extra bottom padding.</p>
+  <div class="grid">${Object.values(DOCKS).map(d=>`<div class="frame-wrap"><div class="label" style="font-size:15px">${d.name}<span class="exp-note">${d.note}</span></div><div class="phone" data-theme="${th}">${homeBody(d.html("Home"))}</div></div>`).join("")}</div>
+  <div class="card" style="max-width:900px;margin-top:18px;font-size:13px;line-height:1.6"><b>Decided:</b> variant A, icons only. Remaining: glass vs solid on low-end Android; hide-on-scroll. <b>Original questions</b> — ① labels vs icons-only (icons-only saves ~16px but hurts discoverability for new users; could show labels for the first week); ② + position: centre (B) is most reachable, right (A/D) keeps the pill symmetrical; ③ glass blur looks great over charts but costs a little performance on low-end Android — can fall back to solid; ④ dock hides on scroll-down, reappears on scroll-up.</div>
+  <hr style="border:0;border-top:1px solid #CBD5E1;margin:36px 0 12px">`;
+}
+
+function render(mode){
+  renderLogos(mode);
+  renderExperiment(mode);
+  const root=document.getElementById("root");root.innerHTML="";
+  const themes=mode==="both"?["light","dark"]:[mode];
+  document.body.classList.toggle("dark-page",mode==="dark");
+  for(const th of themes){
+    const h=document.createElement("h2");h.textContent=th==="light"?"Light":"Dark";h.style.cssText="font-size:18px;margin:24px 0 14px;color:"+(mode==="dark"?"#D4D4D8":"#3F3F46");root.appendChild(h);
+    const g=document.createElement("div");g.className="grid";root.appendChild(g);
+    for(const [name,sub,body] of screens){
+      const w=document.createElement("div");w.className="frame-wrap";
+      w.innerHTML=`<div class="label">${name}<span>${sub}</span></div><div class="phone" data-theme="${th}"><div class="screen">${STATUS}${body}</div></div>`;
+      g.appendChild(w);
+    }
+    const cs=document.createElement("div");cs.className="phone comp-sheet";cs.setAttribute("data-theme",th);
+    cs.innerHTML=`<div style="padding:24px 24px 8px"><div class="h2" style="font-size:22px">Component sheet</div><div style="font-size:13px;color:var(--muted)">All primitives &amp; states · ${th}</div></div>${COMPONENTS}`;
+    const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">25 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
+  }
+}
+document.getElementById("t-light").onclick=()=>render("light");
+document.getElementById("t-dark").onclick=()=>render("dark");
+document.getElementById("t-both").onclick=()=>render("both");
+render("both");
+
+const sw=[["Ink / primary","#18181B","#fff"],["Accent","#F97316","#fff"],["Income","#16A34A","#fff"],["Expense","#DC2626","#fff"],["Transfer","#2563EB","#fff"],["Text","#09090B","#fff"],["Muted","#71717A","#fff"],["Background","#FAFAFA","#09090B"],["Surface 2","#F4F4F5","#09090B"],["Line","#E4E4E7","#09090B"],["Dark bg","#0A0A0A","#fff"],["Dark surface","#161616","#fff"],["Dark surface 2","#222222","#fff"],["Dark line","#2A2A2A","#fff"]];
+document.getElementById("swatches").innerHTML=sw.map(([n,c,t])=>`<div class="swatch" style="background:${c};color:${t}">${n}<br>${c}</div>`).join("");
+</script>
+</body>
+</html>
