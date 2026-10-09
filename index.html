@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -203,6 +203,28 @@
 <div id="logo-pick"></div>
 
 <div id="experiment"></div>
+
+<div id="built-section" style="max-width:1200px;margin:28px 0 16px;background:var(--surface2,#F4F4F5);border:1px solid var(--line,#E4E4E7);border-radius:20px;padding:22px 24px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <span style="font-size:22px">📱</span>
+    <h2 style="font-size:20px;font-weight:800;margin:0;color:var(--text,#09090B)">Built on Sanduk (Real App Flow)</h2>
+    <span style="background:var(--income-soft,#E8F7EE);color:var(--income,#16A34A);font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px">Active App Flow</span>
+  </div>
+  <p style="color:var(--muted,#71717A);font-size:14px;margin:0 0 14px;line-height:1.5">
+    The following screens replicate the active features and UI flow running in the live React Native app — including the 3-tab language switch, bottom sheet modal, 4-step onboarding, and floating dock:
+  </p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px">
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 26 · Welcome (3-Tab Language Switcher)</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 26b · Language Picker Bottom Sheet</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 14 · Step 1: Base Currency</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 15 · Step 2: First Account</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 16 · Step 3: PIN Setup</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 17 · Step 4: Done</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 02 · Home with Floating Dock</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 18 · Accounts List &amp; Balance</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 24 · Themed Dialogs &amp; Settings</span>
+  </div>
+</div>
 
 <div id="root"></div>
 
@@ -1042,37 +1064,18 @@ function render(mode){
   for(const th of themes){
     const h=document.createElement("h2");h.textContent=th==="light"?"Light":"Dark";h.style.cssText="font-size:18px;margin:24px 0 14px;color:"+(mode==="dark"?"#D4D4D8":"#3F3F46");root.appendChild(h);
     const g=document.createElement("div");g.className="grid";root.appendChild(g);
-    for(const [name,sub,body,lang] of getActiveScreens()){
+    const BUILT_KEYS = ["26 ·", "26b ·", "14 ·", "15 ·", "16 ·", "17 ·", "02 ·", "09 ·", "18 ·", "24 ·"];
+    for(const [name,sub,body,lang] of screens){
+      const isBuilt = BUILT_KEYS.some(k => name.startsWith(k));
+      const badge = isBuilt ? ` <span style="display:inline-block;background:var(--income-soft);color:var(--income);font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;vertical-align:middle">Built in App</span>` : "";
       const w=document.createElement("div");w.className="frame-wrap";
-      w.innerHTML=`<div class="label">${name}<span>${sub}</span></div><div class="phone" data-theme="${th}"${lang?` lang="${lang}"`:""}><div class="screen">${STATUS}${body}</div></div>`;
+      w.innerHTML=`<div class="label">${name}${badge}<span>${sub}</span></div><div class="phone" data-theme="${th}"${lang?` lang="${lang}"`:""}><div class="screen">${STATUS}${body}</div></div>`;
       g.appendChild(w);
     }
     const cs=document.createElement("div");cs.className="phone comp-sheet";cs.setAttribute("data-theme",th);
     cs.innerHTML=`<div style="padding:24px 24px 8px"><div class="h2" style="font-size:22px">Component sheet</div><div style="font-size:13px;color:var(--muted)">All primitives &amp; states · ${th}</div></div>${COMPONENTS}`;
     const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">32 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
   }
-}
-document.getElementById("f-current").onclick=()=>{
-  curFlow="current"; localStorage.setItem("sanduk-flow","current");
-  document.getElementById("f-current").classList.add("on");
-  document.getElementById("f-all").classList.remove("on");
-  render(curMode);
-  if (curView === "mobile") setView("mobile");
-};
-document.getElementById("f-all").onclick=()=>{
-  curFlow="all"; localStorage.setItem("sanduk-flow","all");
-  document.getElementById("f-all").classList.add("on");
-  document.getElementById("f-current").classList.remove("on");
-  render(curMode);
-  if (curView === "mobile") setView("mobile");
-};
-// init flow button state
-if (curFlow === "all") {
-  document.getElementById("f-all").classList.add("on");
-  document.getElementById("f-current").classList.remove("on");
-} else {
-  document.getElementById("f-current").classList.add("on");
-  document.getElementById("f-all").classList.remove("on");
 }
 document.getElementById("t-light").onclick=()=>{curMode="light";render("light");};
 document.getElementById("t-dark").onclick=()=>{curMode="dark";render("dark");};
