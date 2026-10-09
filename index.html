@@ -28,6 +28,7 @@
     --transfer:#60A5FA; --transfer-soft:#0F1F3A;
     --warn:#FB923C; --warn-soft:#2A1A0F; --warn-ink:#FDBA74;
   }
+  /* https://naod36.github.io/sanduk-design/ */
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#E4E4E7;color:#18181B;padding:32px;font-family:-apple-system,"SF Pro Text",Inter,Segoe UI,Roboto,sans-serif}
   body.dark-page{background:#000}
@@ -145,7 +146,8 @@
   .langrow.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
   .langrow .glyph{width:44px;height:44px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:20px}
   .langrow .glyph.am{font-family:"Noto Sans Ethiopic",sans-serif}
-  .langseg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:3px;align-self:flex-start;margin-bottom:22px}
+  .langseg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:3px;align-self:flex-start;margin-bottom:22px;user-select:none}
+  .langseg div{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:3px;transition:all .15s ease}
   .langseg div{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted)}
   .langseg .on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
   /* ---- Mobile view ---- */
@@ -250,7 +252,7 @@ const P={
  pie:"M21.21 15.89A10 10 0 1 1 8 2.83 M22 12A10 10 0 0 0 12 2v10z",
  barchart:"M12 20V10 M18 20V4 M6 20v-4",
  del:"M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z M18 9l-6 6 M12 9l6 6",
- plus:"M12 5v14 M5 12h14", chevL:"M15 18l-6-6 6-6", chevR:"M9 18l6-6-6-6", chevD:"M6 9l6 6 6-6",
+ plus:"M12 5v14 M5 12h14", x:"M18 6L6 18 M6 6l12 12", chevL:"M15 18l-6-6 6-6", chevR:"M9 18l6-6-6-6", chevD:"M6 9l6 6 6-6",
  arrowR:"M5 12h14 M12 5l7 7-7 7", arrowDn:"M12 5v14 M19 12l-7 7-7-7", arrowUp:"M12 19V5 M5 12l7-7 7 7",
  wallet:"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1 M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4",
  phone:"M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M12 18h.01",
@@ -743,13 +745,17 @@ const screens=[
  </div>${TAB("Home")}`],
 
 // ================= LANGUAGE: onboarding step variants + Amharic UI =================
-["26 · Language — variant A (on Welcome)","Segmented toggle under the tagline · keeps onboarding at 4 steps",`
+["26 · Language — variant A (on Welcome)","3-tab segmented toggle (English · አማርኛ · More ▾) under tagline · keeps onboarding at 4 steps",`
  <div class="content" style="display:flex;flex-direction:column">
   <div style="flex:.7"></div>
   <div style="width:72px;height:72px;border-radius:22px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;margin-bottom:20px"><svg width="52" height="52" viewBox="0 0 64 64" style="--logo-bg:var(--ink)"><rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/></svg></div>
   <div style="font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.5px">sanduk</div>
   <p style="color:var(--muted);font-size:15px;margin:8px 0 16px;line-height:1.45">Track every birr. Together.</p>
-  <div class="langseg"><div class="on">${I("globe","font-size:12px;margin-right:4px")}English</div><div style="font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div></div>
+  <div class="langseg">
+    <div class="on">${I("globe","font-size:12px;margin-right:2px")}English</div>
+    <div style="font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div>
+    <div><span>More</span> ${I("chevD","font-size:10px")}</div>
+  </div>
   <div class="card" style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:500">
    <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Works offline</div>
    <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>Share with your partner</div>
@@ -758,6 +764,31 @@ const screens=[
   <div style="flex:1"></div>
   <div class="btn">Get started</div>
   <div style="text-align:center;color:var(--muted);font-size:14px;margin:16px 0 30px;font-weight:600">Already have an account? Restore</div>
+ </div>`],
+
+["26b · Language sheet (from Welcome 'More')","Tapping 'More ▾' opens full language picker modal · search + all languages",`
+ <div class="dim"></div>
+ <div class="sheet" style="max-height:86%;display:flex;flex-direction:column;padding:12px 18px 24px">
+  <div class="handle"></div>
+  <div class="row" style="margin-bottom:6px">
+   <div>
+    <div class="h2" style="font-size:20px">Choose language</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:2px">Pick your primary language</div>
+   </div>
+   <div class="icon-btn" style="width:32px;height:32px;border-radius:50%">${I("x")}</div>
+  </div>
+  <div class="search" style="margin:12px 0 14px">${I("search")} Search languages...</div>
+  <div style="display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:360px;padding-right:2px">
+   <div class="langrow on" style="padding:12px 14px"><div class="glyph" style="width:38px;height:38px;font-size:16px">Aa</div><div style="flex:1"><div style="font-weight:700;font-size:15px">English</div><div style="font-size:11px;color:var(--muted)">English</div></div><span style="color:var(--accent);font-size:18px">${I("check")}</span></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph am" style="width:38px;height:38px;font-size:16px">አ</div><div style="flex:1"><div style="font-weight:700;font-size:15px;font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div><div style="font-size:11px;color:var(--muted)">Amharic</div></div></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph" style="width:38px;height:38px;font-size:16px">Ao</div><div style="flex:1"><div style="font-weight:700;font-size:15px">Afaan Oromoo</div><div style="font-size:11px;color:var(--muted)">Oromo</div></div></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph am" style="width:38px;height:38px;font-size:16px">ት</div><div style="flex:1"><div style="font-weight:700;font-size:15px;font-family:'Noto Sans Ethiopic',sans-serif">ትግርኛ</div><div style="font-size:11px;color:var(--muted)">Tigrinya</div></div></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph" style="width:38px;height:38px;font-size:16px">So</div><div style="flex:1"><div style="font-weight:700;font-size:15px">Soomaali</div><div style="font-size:11px;color:var(--muted)">Somali</div></div></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph" style="width:38px;height:38px;font-size:16px">ع</div><div style="flex:1"><div style="font-weight:700;font-size:15px">العربية</div><div style="font-size:11px;color:var(--muted)">Arabic</div></div></div>
+   <div class="langrow" style="padding:12px 14px"><div class="glyph" style="width:38px;height:38px;font-size:16px">Fr</div><div style="flex:1"><div style="font-weight:700;font-size:15px">Français</div><div style="font-size:11px;color:var(--muted)">French</div></div></div>
+  </div>
+  <div class="notice" style="margin-top:14px;display:flex;gap:8px;align-items:flex-start;background:var(--surface2);color:var(--muted);font-size:12px">${I("info","margin-top:2px")}<span>Numbers, currency (ETB), and calculations remain identical across all languages.</span></div>
+  <div class="btn" style="margin-top:14px;padding:14px">Done</div>
  </div>`],
 
 ["27 · Language — variant B (own step)","Step 1 of 5 · big rows · pre-selected from phone language",`
@@ -781,7 +812,11 @@ const screens=[
   <div style="width:72px;height:72px;border-radius:22px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;margin-bottom:20px"><svg width="52" height="52" viewBox="0 0 64 64" style="--logo-bg:var(--ink)"><rect x="12" y="26" width="40" height="30" rx="8" fill="currentColor"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#F97316" transform="rotate(-10 32 14)"/><rect x="26" y="36" width="12" height="4" rx="2" fill="var(--logo-bg,#FAFAFA)"/></svg></div>
   <div style="font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.5px">sanduk</div>
   <p style="color:var(--muted);font-size:15px;margin:8px 0 16px;line-height:1.5">እያንዳንዱን ብር ይከታተሉ። አብራችሁ።</p>
-  <div class="langseg"><div>${I("globe","font-size:12px;margin-right:4px")}English</div><div class="on">አማርኛ</div></div>
+  <div class="langseg">
+    <div>${I("globe","font-size:12px;margin-right:2px")}English</div>
+    <div class="on" style="font-family:'Noto Sans Ethiopic',sans-serif">አማርኛ</div>
+    <div style="font-family:'Noto Sans Ethiopic',sans-serif;display:inline-flex;align-items:center;gap:3px"><span>ሌሎች</span> ${I("chevD","font-size:10px")}</div>
+  </div>
   <div class="card" style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:500">
    <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>ያለ ኢንተርኔት ይሰራል</div>
    <div style="display:flex;gap:12px;align-items:center"><span style="color:var(--income);font-size:18px">${I("check")}</span>ከባለቤትዎ ጋር ይጋሩ</div>
