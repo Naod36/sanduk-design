@@ -150,6 +150,14 @@
   .langseg div{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:3px;transition:all .15s ease}
   .langseg div{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted)}
   .langseg .on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  /* ---- Flow filter ---- */
+  .toolbar .seg-flow{display:inline-flex;background:#D4D4D8;border-radius:10px;padding:3px}
+  .toolbar .seg-flow button{background:transparent;color:#3F3F46;border:0;border-radius:8px;padding:7px 14px;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s}
+  .toolbar .seg-flow button.on{background:#fff;color:#18181B;box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:700}
+  .dark-page .toolbar .seg-flow{background:#27272A}
+  .dark-page .toolbar .seg-flow button{color:#A1A1AA}
+  .dark-page .toolbar .seg-flow button.on{background:#18181B;color:#FAFAFA}
+  .flow-banner{margin:-14px 0 20px;padding:10px 16px;background:var(--accent-soft);border:1px solid rgba(249,115,22,.2);border-radius:12px;font-size:13px;color:var(--warn-ink);display:flex;align-items:center;justify-content:space-between;max-width:900px}
   /* ---- Mobile view ---- */
   .toolbar .seg-view{display:inline-flex;background:#D4D4D8;border-radius:10px;padding:3px;margin-left:auto}
   .toolbar .seg-view button{background:transparent;color:#3F3F46;padding:7px 12px;border-radius:8px}
@@ -1034,7 +1042,7 @@ function render(mode){
   for(const th of themes){
     const h=document.createElement("h2");h.textContent=th==="light"?"Light":"Dark";h.style.cssText="font-size:18px;margin:24px 0 14px;color:"+(mode==="dark"?"#D4D4D8":"#3F3F46");root.appendChild(h);
     const g=document.createElement("div");g.className="grid";root.appendChild(g);
-    for(const [name,sub,body,lang] of screens){
+    for(const [name,sub,body,lang] of getActiveScreens()){
       const w=document.createElement("div");w.className="frame-wrap";
       w.innerHTML=`<div class="label">${name}<span>${sub}</span></div><div class="phone" data-theme="${th}"${lang?` lang="${lang}"`:""}><div class="screen">${STATUS}${body}</div></div>`;
       g.appendChild(w);
@@ -1043,6 +1051,28 @@ function render(mode){
     cs.innerHTML=`<div style="padding:24px 24px 8px"><div class="h2" style="font-size:22px">Component sheet</div><div style="font-size:13px;color:var(--muted)">All primitives &amp; states · ${th}</div></div>${COMPONENTS}`;
     const cw=document.createElement("div");cw.className="frame-wrap";cw.innerHTML=`<div class="label">32 · Components<span>Buttons, inputs, chips, pills, progress, toggles, feedback, PIN &amp; lock</span></div>`;cw.appendChild(cs);g.appendChild(cw);
   }
+}
+document.getElementById("f-current").onclick=()=>{
+  curFlow="current"; localStorage.setItem("sanduk-flow","current");
+  document.getElementById("f-current").classList.add("on");
+  document.getElementById("f-all").classList.remove("on");
+  render(curMode);
+  if (curView === "mobile") setView("mobile");
+};
+document.getElementById("f-all").onclick=()=>{
+  curFlow="all"; localStorage.setItem("sanduk-flow","all");
+  document.getElementById("f-all").classList.add("on");
+  document.getElementById("f-current").classList.remove("on");
+  render(curMode);
+  if (curView === "mobile") setView("mobile");
+};
+// init flow button state
+if (curFlow === "all") {
+  document.getElementById("f-all").classList.add("on");
+  document.getElementById("f-current").classList.remove("on");
+} else {
+  document.getElementById("f-current").classList.add("on");
+  document.getElementById("f-all").classList.remove("on");
 }
 document.getElementById("t-light").onclick=()=>{curMode="light";render("light");};
 document.getElementById("t-dark").onclick=()=>{curMode="dark";render("dark");};
