@@ -93,6 +93,12 @@ test('Screen 32 features interactive sync pill and SQLite storage popover', () =
   assert.ok(html.includes('Cloud connection:'), 'Missing Cloud connection text');
 });
 
+test('Screen 33 features bank branding and account number chips', () => {
+  assert.ok(html.includes('33 · Account Picker with Account Number Chips'), 'Missing Screen 33 in screens array');
+  assert.ok(html.includes('CBE •••• 4821'), 'Missing CBE account number chip');
+  assert.ok(html.includes('Commercial Bank of Ethiopia'), 'Missing bank name');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {

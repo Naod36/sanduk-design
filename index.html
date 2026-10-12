@@ -224,6 +224,7 @@
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 18 · Accounts List &amp; Balance</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 24 · Themed Dialogs &amp; Settings</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 32 · Sync Pill &amp; Storage Popover</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 33 · Account Number Chips</span>
   </div>
 </div>
 
@@ -980,6 +981,81 @@ const screens=[
    <div class="card" style="padding:4px 16px">
     ${TX("cart","var(--surface2)","var(--text)","Fresh Corner","Food · Today","-350.00","exp")}
    </div>
+  </div>
+ </div>${TAB("Home")}`],
+
+["33 · Account Picker with Account Number Chips","Bank institution branding + masked account number chips (e.g. CBE •••• 4821)",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px">
+   <div class="h2" style="font-size:20px">Choose Account</div>
+   <div class="pill" style="background:var(--surface2);color:var(--text);font-weight:600">5 active</div>
+  </div>
+
+  <div class="search" style="margin-bottom:16px">${I("search")} Filter by bank or account number...</div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+   <div class="card" style="padding:14px;display:flex;align-items:center;gap:12px;border:2px solid var(--ink)">
+    <div class="cat" style="background:var(--ink);color:var(--on-ink)">${I("landmark")}</div>
+    <div style="flex:1;min-width:0">
+     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <b style="font-size:14px">Commercial Bank of Ethiopia</b>
+     </div>
+     <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+      <span class="pill" style="background:var(--surface2);font-family:monospace;font-size:11px;font-weight:700">CBE •••• 4821</span>
+      <span style="font-size:12px;color:var(--muted)">Checking · Primary</span>
+     </div>
+    </div>
+    <div style="text-align:right">
+     <div class="money" style="font-size:15px">ETB 58,420</div>
+     <span class="pill" style="background:var(--income-soft);color:var(--income);font-size:10px;margin-top:2px">Selected</span>
+    </div>
+   </div>
+
+   <div class="card" style="padding:14px;display:flex;align-items:center;gap:12px">
+    <div class="cat" style="background:var(--surface2);color:var(--text)">${I("landmark")}</div>
+    <div style="flex:1;min-width:0">
+     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <b style="font-size:14px">Commercial Bank of Ethiopia</b>
+     </div>
+     <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+      <span class="pill" style="background:var(--surface2);font-family:monospace;font-size:11px;font-weight:700">CBE •••• 9934</span>
+      <span style="font-size:12px;color:var(--muted)">Savings · Emergency</span>
+     </div>
+    </div>
+    <div class="money" style="font-size:15px">ETB 12,050</div>
+   </div>
+
+   <div class="card" style="padding:14px;display:flex;align-items:center;gap:12px">
+    <div class="cat" style="background:var(--surface2);color:var(--text)">${I("home")}</div>
+    <div style="flex:1;min-width:0">
+     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <b style="font-size:14px">Awash Bank</b>
+     </div>
+     <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+      <span class="pill" style="background:var(--surface2);font-family:monospace;font-size:11px;font-weight:700">Awash •••• 1042</span>
+      <span style="font-size:12px;color:var(--muted)">Joint Family Vault</span>
+     </div>
+    </div>
+    <div class="money" style="font-size:15px">ETB 65,000</div>
+   </div>
+
+   <div class="card" style="padding:14px;display:flex;align-items:center;gap:12px">
+    <div class="cat" style="background:var(--surface2);color:var(--text)">${I("phone")}</div>
+    <div style="flex:1;min-width:0">
+     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <b style="font-size:14px">Telebirr Wallet</b>
+     </div>
+     <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+      <span class="pill" style="background:var(--surface2);font-family:monospace;font-size:11px;font-weight:700">Telebirr •••• 7712</span>
+      <span style="font-size:12px;color:var(--muted)">Mobile Money</span>
+     </div>
+    </div>
+    <div class="money" style="font-size:15px">ETB 3,120</div>
+   </div>
+  </div>
+
+  <div class="btn ghost" style="margin-top:16px;display:flex;gap:8px;justify-content:center;align-items:center;font-size:14px">
+   ${I("plus")} Add new bank or mobile account
   </div>
  </div>${TAB("Home")}`],
 
