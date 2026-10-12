@@ -105,6 +105,12 @@ test('Screen 34 features personal vs household dual ledger mode', () => {
   assert.ok(html.includes('Household Vault'), 'Missing Household Vault toggle');
 });
 
+test('Screen 35 features quick-add sheet with numeric keypad and category chips', () => {
+  assert.ok(html.includes('35 · Quick-Add Sheet & Numeric Keypad'), 'Missing Screen 35 in screens array');
+  assert.ok(html.includes('Save Expense'), 'Missing Save Expense action');
+  assert.ok(html.includes('keypad'), 'Missing keypad grid container');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
