@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -223,6 +223,7 @@
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 02 · Home with Floating Dock</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 18 · Accounts List &amp; Balance</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 24 · Themed Dialogs &amp; Settings</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 32 · Sync Pill &amp; Storage Popover</span>
   </div>
 </div>
 
@@ -927,6 +928,61 @@ const screens=[
   <div class="h3" style="margin:18px 0 8px;text-transform:none">ዕዳዎች</div>
   <div class="card" style="padding:4px 16px">${TX("landmark","var(--expense-soft)","var(--expense)","የመኪና ብድር — አዋሽ","ብድር · 9.5%","-182,000","exp")}</div>
  </div>${TAB("Home")}`,"am"],
+["32 · Sync Status & Storage Popover","Device SQLite persistence ✅ + Cloud connection retry & pending changes popover",`
+ <div class="content" style="position:relative">
+  <div class="row" style="margin:10px 0 8px">
+   <div style="display:flex;align-items:center;gap:10px">
+    <div class="avatar b">N</div>
+    <div>
+     <div style="font-size:12px;color:var(--muted)">Good morning</div>
+     <div style="font-size:16px;font-weight:700">Naod Kassahun</div>
+    </div>
+   </div>
+   <div class="pill" style="background:var(--income-soft);color:var(--income);border:1px solid rgba(22,163,74,.2);cursor:pointer">
+    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--income)"></span> Synced
+   </div>
+  </div>
+
+  <div style="margin-top:8px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(0,0,0,.12)">
+   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+    <div style="font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px">
+     ${I("shield","color:var(--accent)")} Storage &amp; Sync Status
+    </div>
+    <span class="pill" style="background:var(--income-soft);color:var(--income);font-size:10px">Active</span>
+   </div>
+   <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+    <div class="row">
+     <span style="color:var(--muted)">Saved on device:</span>
+     <span style="font-weight:600;color:var(--income);display:flex;align-items:center;gap:4px">${I("check","color:var(--income)")} Yes (SQLite)</span>
+    </div>
+    <div class="row">
+     <span style="color:var(--muted)">Cloud connection:</span>
+     <span style="font-weight:600;display:flex;align-items:center;gap:4px">
+      <span style="width:7px;height:7px;border-radius:50%;background:var(--income);display:inline-block"></span> Connected
+     </span>
+    </div>
+    <div class="row">
+     <span style="color:var(--muted)">Pending changes:</span>
+     <span style="font-weight:600;background:var(--surface2);padding:2px 8px;border-radius:999px;font-size:11px">0 waiting to sync</span>
+    </div>
+   </div>
+   <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:8px">
+    <div class="btn" style="flex:1;padding:10px;font-size:13px;border-radius:10px">Sync now</div>
+    <div class="btn ghost" style="padding:10px 14px;font-size:13px;border-radius:10px">Done</div>
+   </div>
+  </div>
+
+  <div style="opacity:.4;pointer-events:none;margin-top:16px">
+   <div class="card hero" style="margin-bottom:14px">
+    <div style="font-size:12px;opacity:.8">Safe to spend</div>
+    <div style="font-size:30px;font-weight:800;margin:4px 0 2px">ETB 14,850</div>
+   </div>
+   <div class="card" style="padding:4px 16px">
+    ${TX("cart","var(--surface2)","var(--text)","Fresh Corner","Food · Today","-350.00","exp")}
+   </div>
+  </div>
+ </div>${TAB("Home")}`],
+
 ];
 
 // ================= COMPONENT SHEET =================

@@ -86,6 +86,13 @@ test('Phone frames render within proper 375x812 viewport container', () => {
   assert.ok(html.includes('height:812px'), 'Missing 812px phone height rule');
 });
 
+test('Screen 32 features interactive sync pill and SQLite storage popover', () => {
+  assert.ok(html.includes('32 · Sync Status & Storage Popover'), 'Missing Screen 32 in screens array');
+  assert.ok(html.includes('Saved on device:'), 'Missing Saved on device text');
+  assert.ok(html.includes('SQLite'), 'Missing SQLite indicator');
+  assert.ok(html.includes('Cloud connection:'), 'Missing Cloud connection text');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
