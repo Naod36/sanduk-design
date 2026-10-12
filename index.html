@@ -227,6 +227,7 @@
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 33 · Account Number Chips</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 34 · Personal vs Household Mode</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 35 · Quick-Add Tactile Keypad</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 36 · Day-Grouped Feed &amp; Search</span>
   </div>
 </div>
 
@@ -1149,6 +1150,46 @@ const screens=[
    </div>
   </div>
  </div>`],
+
+["36 · Transactions Feed (Day-Grouped)","Timeline feed grouped by date with day aggregates, live search, and filter pills",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 12px">
+   <div class="h2" style="font-size:24px">Transactions</div>
+   <div class="icon-btn">${I("search")}</div>
+  </div>
+
+  <div class="search" style="margin-bottom:12px">
+   ${I("search")} Search notes, merchants, or amounts...
+  </div>
+
+  <div class="chips" style="margin-bottom:16px;overflow-x:auto">
+   <div class="chip on">All (24)</div>
+   <div class="chip">Expenses</div>
+   <div class="chip">Income</div>
+   <div class="chip">Transfers</div>
+  </div>
+
+  <!-- Day Group 1 -->
+  <div class="day"><span>TODAY</span><span class="money exp">-470.00 ETB</span></div>
+  <div class="card" style="padding:4px 16px;margin-bottom:12px">
+   ${TX("cart","var(--surface2)","var(--text)","Fresh Corner","Food · CBE ••4821","-350.00","exp")}
+   ${TX("car","var(--surface2)","var(--text)","Ride to Piassa","Transport · Telebirr","-120.00","exp")}
+  </div>
+
+  <!-- Day Group 2 -->
+  <div class="day"><span>YESTERDAY</span><span class="money inc">+43,150.00 ETB</span></div>
+  <div class="card" style="padding:4px 16px;margin-bottom:12px">
+   ${TX("landmark","var(--income-soft)","var(--income)","Salary Deposit","Income · CBE ••4821","+45,000.00","inc")}
+   ${TX("utensils","var(--surface2)","var(--text)","Kaldi's Coffee","Food &amp; Drinks · Telebirr","-180.00","exp")}
+   ${TX("bulb","var(--surface2)","var(--text)","Internet &amp; Power","Utilities · CBE ••4821","-1,670.00","exp")}
+  </div>
+
+  <!-- Day Group 3 -->
+  <div class="day"><span>OCT 8</span><span class="money trf">-2,500.00 ETB</span></div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("swap","var(--transfer-soft)","var(--transfer)","Transfer to Vault","Transfer · CBE → Awash","2,500.00","trf")}
+  </div>
+ </div>${TAB("Transactions")}`],
 
 ];
 

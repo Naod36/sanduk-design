@@ -111,6 +111,12 @@ test('Screen 35 features quick-add sheet with numeric keypad and category chips'
   assert.ok(html.includes('keypad'), 'Missing keypad grid container');
 });
 
+test('Screen 36 features day-grouped transactions feed with live search', () => {
+  assert.ok(html.includes('36 · Transactions Feed (Day-Grouped)'), 'Missing Screen 36 in screens array');
+  assert.ok(html.includes('TODAY'), 'Missing TODAY group header');
+  assert.ok(html.includes('Search notes, merchants, or amounts...'), 'Missing search placeholder');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
