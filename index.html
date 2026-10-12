@@ -228,6 +228,7 @@
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 34 · Personal vs Household Mode</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 35 · Quick-Add Tactile Keypad</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 36 · Day-Grouped Feed &amp; Search</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 37 · Transaction Detail &amp; Audit</span>
   </div>
 </div>
 
@@ -1188,6 +1189,55 @@ const screens=[
   <div class="day"><span>OCT 8</span><span class="money trf">-2,500.00 ETB</span></div>
   <div class="card" style="padding:4px 16px">
    ${TX("swap","var(--transfer-soft)","var(--transfer)","Transfer to Vault","Transfer · CBE → Awash","2,500.00","trf")}
+  </div>
+ </div>${TAB("Transactions")}`],
+
+["37 · Transaction Detail & Audit Trail","Receipt modal with category icon, account chip, sync audit, and member attribution",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px">
+   <div style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:6px">
+    ${I("arrowLeft")} Details
+   </div>
+   <div class="pill" style="background:var(--income-soft);color:var(--income);font-weight:600">
+    ${I("check")} Synced
+   </div>
+  </div>
+
+  <div class="card" style="text-align:center;padding:24px 16px;margin-bottom:16px">
+   <div class="cat" style="background:var(--expense-soft);color:var(--expense);margin:0 auto 12px;width:52px;height:52px;font-size:24px">🍔</div>
+   <div style="font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Food &amp; Dining</div>
+   <div class="money exp" style="font-size:36px;font-weight:800;margin:6px 0 4px">-350.00 ETB</div>
+   <div style="font-size:13px;color:var(--muted)">Today, 1:15 PM · Fresh Corner Bole</div>
+  </div>
+
+  <div class="card" style="padding:4px 16px;margin-bottom:16px">
+   <div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);font-size:13px">
+    <span style="color:var(--muted)">Account</span>
+    <span class="pill" style="background:var(--surface2);font-family:monospace;font-weight:700">CBE •••• 4821</span>
+   </div>
+   <div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);font-size:13px">
+    <span style="color:var(--muted)">Recorded by</span>
+    <span style="display:flex;align-items:center;gap:6px;font-weight:600">
+     <span class="avatar s b">N</span> Naod Kassahun
+    </span>
+   </div>
+   <div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);font-size:13px">
+    <span style="color:var(--muted)">Scope</span>
+    <span class="pill" style="background:var(--surface2)">Household Expense</span>
+   </div>
+   <div class="row" style="padding:12px 0;font-size:13px">
+    <span style="color:var(--muted)">Note</span>
+    <span style="font-weight:500;text-align:right;max-width:180px">Team lunch meeting</span>
+   </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+   <div class="btn" style="padding:14px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px">
+    ${I("pencil")} Edit Transaction
+   </div>
+   <div class="btn ghost" style="padding:14px;font-size:15px;color:var(--expense);display:flex;align-items:center;justify-content:center;gap:6px">
+    ${I("del")} Delete Transaction
+   </div>
   </div>
  </div>${TAB("Transactions")}`],
 

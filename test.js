@@ -117,6 +117,12 @@ test('Screen 36 features day-grouped transactions feed with live search', () => 
   assert.ok(html.includes('Search notes, merchants, or amounts...'), 'Missing search placeholder');
 });
 
+test('Screen 37 features transaction detail modal with audit trail', () => {
+  assert.ok(html.includes('37 · Transaction Detail & Audit Trail'), 'Missing Screen 37 in screens array');
+  assert.ok(html.includes('Recorded by'), 'Missing Recorded by member attribution');
+  assert.ok(html.includes('Delete Transaction'), 'Missing Delete Transaction action');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
