@@ -129,6 +129,12 @@ test('Screen 38 features loan and debt amortization tracking', () => {
   assert.ok(html.includes('65% Paid'), 'Missing 65% paid status');
 });
 
+test('Interactive in-browser test runner button and badge exist in toolbar', () => {
+  assert.ok(html.includes('id="t-test"'), 'Missing Run UI Tests button');
+  assert.ok(html.includes('id="test-badge"'), 'Missing test result badge');
+  assert.ok(html.includes('runBrowserTests'), 'Missing runBrowserTests function');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {

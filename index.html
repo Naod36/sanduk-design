@@ -197,6 +197,8 @@
   <button id="t-dark">Dark theme</button>
   <button id="t-both" class="alt">Show both</button>
   <span class="seg-view"><button id="v-desktop" class="on">Desktop view</button><button id="v-mobile">Mobile view</button></span>
+  <button id="t-test" style="background:#16A34A;display:inline-flex;align-items:center;gap:6px">🧪 Run UI Tests</button>
+  <span id="test-badge" style="display:none;font-weight:700;font-size:12px;padding:6px 14px;border-radius:999px;background:var(--income-soft,#E8F7EE);color:var(--income,#16A34A)"></span>
 </div>
 <div class="mnav" id="mnav"><button id="m-prev">‹</button><select id="m-select"></select><button id="m-next">›</button></div>
 
@@ -1484,7 +1486,38 @@ document.addEventListener("touchend",e=>{if(curView!=="mobile"||tx0===null)retur
 // theme buttons must re-apply mobile state after re-render
 const _render=render; render=function(mode){_render(mode); if(curView==="mobile") setView("mobile");};
 
-const initialView=localStorage.getItem("sanduk-view")||(window.innerWidth<700?"mobile":"desktop");
+
+  // ================= IN-BROWSER TEST RUNNER =================
+  function runBrowserTests(){
+    let p=0, tot=0;
+    function check(cond, name){ tot++; if(cond){ p++; console.log("✔", name); } else { console.error("✖", name); } }
+    
+    check(screens.length >= 30, "Screen count >= 30 (currently: " + screens.length + ")");
+    check(document.getElementById("t-light") !== null, "Light theme button exists");
+    check(document.getElementById("t-dark") !== null, "Dark theme button exists");
+    check(document.getElementById("v-mobile") !== null, "Mobile view toggle exists");
+    check(typeof P === "object" && Object.keys(P).length > 10, "Lucide vector icon library loaded");
+    check(screens.some(s => s[0].includes("32 · Sync")), "Screen 32 (Sync Pill) registered");
+    check(screens.some(s => s[0].includes("33 · Account")), "Screen 33 (Account Chips) registered");
+    check(screens.some(s => s[0].includes("34 · Finance")), "Screen 34 (Dual Mode) registered");
+    check(screens.some(s => s[0].includes("35 · Quick-Add")), "Screen 35 (Tactile Keypad) registered");
+    check(screens.some(s => s[0].includes("36 · Transactions")), "Screen 36 (Day Grouped Feed) registered");
+    check(screens.some(s => s[0].includes("37 · Transaction Detail")), "Screen 37 (Detail Audit) registered");
+    check(screens.some(s => s[0].includes("38 · Loan")), "Screen 38 (Loan Tracker) registered");
+    
+    const badge = document.getElementById("test-badge");
+    if(badge){
+      badge.style.display = "inline-flex";
+      badge.textContent = "✔ " + p + "/" + tot + " In-Browser Tests Passed";
+      badge.style.background = p === tot ? "var(--income-soft, #E8F7EE)" : "var(--expense-soft, #FDECEC)";
+      badge.style.color = p === tot ? "var(--income, #16A34A)" : "var(--expense, #DC2626)";
+    }
+  }
+
+  const btnTest = document.getElementById("t-test");
+  if(btnTest) btnTest.onclick = runBrowserTests;
+
+  const initialView=localStorage.getItem("sanduk-view")||(window.innerWidth<700?"mobile":"desktop");
 if(initialView==="mobile"){curMode="light";render("light");setView("mobile");} else {render("both");setView("desktop");}
 
 const sw=[["Ink / primary","#18181B","#fff"],["Accent","#F97316","#fff"],["Income","#16A34A","#fff"],["Expense","#DC2626","#fff"],["Transfer","#2563EB","#fff"],["Text","#09090B","#fff"],["Muted","#71717A","#fff"],["Background","#FAFAFA","#09090B"],["Surface 2","#F4F4F5","#09090B"],["Line","#E4E4E7","#09090B"],["Dark bg","#0A0A0A","#fff"],["Dark surface","#161616","#fff"],["Dark surface 2","#222222","#fff"],["Dark line","#2A2A2A","#fff"]];
