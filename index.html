@@ -229,6 +229,7 @@
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 35 · Quick-Add Tactile Keypad</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 36 · Day-Grouped Feed &amp; Search</span>
     <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 37 · Transaction Detail &amp; Audit</span>
+    <span style="background:var(--surface,#fff);border:1px solid var(--line,#E4E4E7);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600">✨ 38 · Loan &amp; Debt Tracker</span>
   </div>
 </div>
 
@@ -1240,6 +1241,47 @@ const screens=[
    </div>
   </div>
  </div>${TAB("Transactions")}`],
+
+["38 · Loan & Debt Tracker","Amortized debt tracking, repayment progress, and interest schedules",`
+ <div class="content">
+  <div class="row" style="margin:10px 0 14px">
+   <div class="h2" style="font-size:24px">Debts &amp; Loans</div>
+   <div class="icon-btn">${I("plus")}</div>
+  </div>
+
+  <div class="card hero" style="margin-bottom:14px">
+   <div class="row">
+    <div style="font-size:12px;opacity:.8">Total Outstanding Debt</div>
+    <span class="pill" style="background:var(--expense-soft);color:var(--expense);font-size:10px;font-weight:700">1 Active Loan</span>
+   </div>
+   <div style="font-size:32px;font-weight:800;margin:6px 0 2px">ETB 182,000</div>
+   <div style="font-size:12px;opacity:.8">Next due: ETB 14,500 on Nov 1</div>
+  </div>
+
+  <div class="h3" style="margin:16px 0 8px;text-transform:none">Bank Loans</div>
+  <div class="card" style="margin-bottom:14px">
+   <div class="row" style="margin-bottom:8px">
+    <div>
+     <b style="font-size:15px">Car Loan — Awash Bank</b>
+     <div style="font-size:12px;color:var(--muted);margin-top:2px">9.5% annual interest · 36 mo term</div>
+    </div>
+    <span class="pill" style="background:var(--income-soft);color:var(--income);font-weight:700">65% Paid</span>
+   </div>
+   <div class="bar" style="height:10px;margin-bottom:12px;background:var(--surface2)">
+    <i style="width:65%;background:var(--accent)"></i>
+   </div>
+   <div class="row" style="font-size:12px;color:var(--muted)">
+    <span>Paid: <b>338,000 ETB</b></span>
+    <span>Remaining: <b style="color:var(--expense)">182,000 ETB</b></span>
+   </div>
+  </div>
+
+  <div class="h3" style="margin:16px 0 8px;text-transform:none">Personal IOUs &amp; Peer Debts</div>
+  <div class="card" style="padding:4px 16px">
+   ${TX("user","var(--income-soft)","var(--income)","Lent to Henok","Peer IOU · Due Oct 20","+3,500.00","inc")}
+   ${TX("user","var(--expense-soft)","var(--expense)","Borrowed from Tigist","Dinner split · Due Oct 25","-1,200.00","exp")}
+  </div>
+ </div>${TAB("Budgets")}`],
 
 ];
 

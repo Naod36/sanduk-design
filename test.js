@@ -123,6 +123,12 @@ test('Screen 37 features transaction detail modal with audit trail', () => {
   assert.ok(html.includes('Delete Transaction'), 'Missing Delete Transaction action');
 });
 
+test('Screen 38 features loan and debt amortization tracking', () => {
+  assert.ok(html.includes('38 · Loan & Debt Tracker'), 'Missing Screen 38 in screens array');
+  assert.ok(html.includes('Car Loan — Awash Bank'), 'Missing Car Loan Awash Bank');
+  assert.ok(html.includes('65% Paid'), 'Missing 65% paid status');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
