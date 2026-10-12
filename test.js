@@ -99,6 +99,12 @@ test('Screen 33 features bank branding and account number chips', () => {
   assert.ok(html.includes('Commercial Bank of Ethiopia'), 'Missing bank name');
 });
 
+test('Screen 34 features personal vs household dual ledger mode', () => {
+  assert.ok(html.includes('34 · Finance Mode: Personal vs Household'), 'Missing Screen 34 in screens array');
+  assert.ok(html.includes('Personal (Private)'), 'Missing Personal mode toggle');
+  assert.ok(html.includes('Household Vault'), 'Missing Household Vault toggle');
+});
+
 console.log(`\n\x1b[1mSummary: ${passed} passed, ${failed} failed\x1b[0m\n`);
 
 if (failed > 0) {
